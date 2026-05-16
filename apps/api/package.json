@@ -1,0 +1,28 @@
+{
+  "name": "@mailtrack/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@mailtrack/db": "workspace:*",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "better-auth": "^1.6.11",
+    "drizzle-orm": "^0.45.0",
+    "hono": "^4.6.0",
+    "stripe": "^22.1.1"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.0",
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "typescript": "^5.5.0",
+    "vitest": "~2.1.0",
+    "wrangler": "^3.80.0"
+  }
+}

@@ -1,0 +1,56 @@
+name: Personal Info Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for personal information patterns
+        run: |
+          FAILED=0
+          PATTERNS=(
+            'Kameoka'
+            'Daiki'
+            '亀畑'
+            'kamehata'
+            '出前館'
+            'demae'
+            'demaecan'
+            'デマエカン'
+            'kamekichii'
+            'お店価格'
+            'PM転職'
+            '事業企画'
+            'だいき'
+            'STAR素材'
+            '副業ポートフォリオ'
+            '副業'
+            '本業'
+            'food delivery company'
+            'Japanese food delivery'
+            'Amazon リターン'
+            'Amazon return'
+            'mt_u6x208'
+          )
+
+          for pattern in "${PATTERNS[@]}"; do
+            if grep -rI "$pattern" --include='*.md' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.json' --include='*.yml' --include='*.yaml' --include='*.toml' . 2>/dev/null | grep -v node_modules | grep -v '.git/' | grep -q .; then
+              echo "::error::Found personal info pattern: \"$pattern\""
+              grep -rIn "$pattern" --include='*.md' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.json' --include='*.yml' --include='*.yaml' --include='*.toml' . 2>/dev/null | grep -v node_modules | grep -v '.git/'
+              FAILED=1
+            fi
+          done
+
+          if [ $FAILED -eq 1 ]; then
+            echo "::error::Personal information detected. See docs/PRE-PUBLISH-CHECKLIST.md"
+            exit 1
+          fi
+
+          echo "✅ No personal information patterns found."

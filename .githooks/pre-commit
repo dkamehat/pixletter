@@ -1,0 +1,61 @@
+#!/bin/bash
+# Pre-commit hook: block commits containing personal information patterns.
+# Installed via: git config core.hooksPath .githooks
+
+RED='\033[0;31m'
+NC='\033[0m'
+
+PATTERNS=(
+  'Kameoka'
+  'Daiki'
+  '亀畑'
+  'kamehata'
+  '出前館'
+  'demae'
+  'demaecan'
+  'デマエカン'
+  'kamekichii'
+  'お店価格'
+  'PM転職'
+  '事業企画'
+  'だいき'
+  'STAR素材'
+  '副業ポートフォリオ'
+  '副業'
+  '本業'
+  'food delivery company'
+  'Japanese food delivery'
+  'Amazon リターン'
+  'Amazon return'
+  'mt_u6x208'
+  'C:\\Users\\dkame'
+  '/c/Users/dkame'
+)
+
+FAILED=0
+
+# Exclude the guard files themselves from pattern matching
+EXCLUDE_FILES=".githooks/pre-commit|.github/workflows/check-personal-info.yml|docs/PRE-PUBLISH-CHECKLIST.md"
+
+for pattern in "${PATTERNS[@]}"; do
+  # Check staged files only (excluding binary files and guard files)
+  MATCHES=$(git diff --cached --diff-filter=ACMR -z --name-only | \
+    xargs -0 git grep -I -l "$pattern" -- 2>/dev/null | \
+    grep -Ev "$EXCLUDE_FILES" || true)
+  if [ -n "$MATCHES" ]; then
+    echo -e "${RED}BLOCKED:${NC} Found personal info pattern: \"$pattern\""
+    echo "$MATCHES" | while read -r f; do
+      git grep -I -n "$pattern" -- "$f" 2>/dev/null
+    done
+    FAILED=1
+  fi
+done
+
+if [ $FAILED -eq 1 ]; then
+  echo ""
+  echo -e "${RED}Commit rejected.${NC} Remove personal information before committing."
+  echo "See docs/PRE-PUBLISH-CHECKLIST.md for cleanup instructions."
+  exit 1
+fi
+
+exit 0

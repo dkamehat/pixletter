@@ -1,0 +1,61 @@
+/* mailtrack-pf: Gmail Compose 画面のトラッキングトグル */
+
+.mt-track-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  margin-left: 8px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-family: 'Google Sans', Roboto, sans-serif;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.mt-track-toggle--on {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.mt-track-toggle--off {
+  background-color: #f5f5f5;
+  color: #9e9e9e;
+  border: 1px solid #e0e0e0;
+}
+
+.mt-track-toggle:hover {
+  opacity: 0.85;
+}
+
+.mt-track-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.mt-track-toggle--on .mt-track-dot {
+  background-color: #4caf50;
+}
+
+.mt-track-toggle--off .mt-track-dot {
+  background-color: #bdbdbd;
+}
+
+/* Sent フォルダの開封ステータスアイコン — FR-EXT-05 */
+.mt-status {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 11px;
+  vertical-align: middle;
+}
+
+.mt-status--unopened {
+  color: #9e9e9e;
+}
+
+.mt-status--opened {
+  color: #4caf50;
+}
