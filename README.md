@@ -210,13 +210,16 @@ pnpm type-check
 
 | ドキュメント | 内容 |
 |---|---|
-| [PRD.md](docs/PRD.md) | プロダクト要件定義書 |
 | [ADR-001](docs/ADR-001-stack-selection.md) | 技術スタック選定の意思決定記録 |
 | [ADR-002](docs/ADR-002-free-tier-operations.md) | 無料運用設計の意思決定記録 |
 | [ADR-003](docs/phase2/ADR-003-multi-tenant-architecture.md) | マルチテナント設計 |
 | [ADR-004](docs/phase2/ADR-004-oss-licensing-and-hosting-model.md) | AGPLv3 採用 |
 | [CHECKLIST.md](CHECKLIST.md) | Day 1 実行チェックリスト |
-| [CLAUDE.md](CLAUDE.md) | Claude Code 委任プロトコル |
+| [API-REFERENCE.md](docs/API-REFERENCE.md) | API リファレンス |
+| [GOOGLE-OAUTH-SETUP.md](docs/GOOGLE-OAUTH-SETUP.md) | Google OAuth セットアップガイド |
+| [SELF-HOST-GUIDE.md](docs/SELF-HOST-GUIDE.md) | セルフホスト手順 |
+| [SHOW-HN.md](docs/SHOW-HN.md) | Show HN 投稿文 |
+| [CLAUDE-CODE-CASE-STUDY.md](docs/CLAUDE-CODE-CASE-STUDY.md) | Claude Code 活用事例 |
 
 ---
 
