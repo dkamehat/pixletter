@@ -1,4 +1,4 @@
-# ADR-003: マルチテナント・アーキテクチャ
+# ADR-003: Multi-Tenant Architecture
 
 | Field | Value |
 |---|---|
@@ -11,115 +11,115 @@
 
 ## Context
 
-Phase 2 で **Open Core モデル**（OSS版 + 公式ホスティング版）を展開する。公式版は不特定多数のユーザーを受け入れるため、Phase 1 のシングルテナント設計を **マルチテナント化**する必要がある。
+Phase 2 introduces an **Open Core model** (OSS + official hosted version). The hosted version accepts multiple users, requiring the Phase 1 single-tenant design to be **multi-tenanted**.
 
-### 主要な技術的問い
+### Key Technical Questions
 
-1. データ分離方式は？（共有 DB + tenant_id / DB per tenant / Schema per tenant）
-2. 認証はどう強化するか？
-3. レート制限・abuse 対策はどうするか？
-4. OSS版とのコードベース統一は維持できるか？
-5. Cloudflare D1 の制約下で何が可能か？
+1. Data isolation approach? (Shared DB + tenant_id / DB per tenant / Schema per tenant)
+2. How to strengthen authentication?
+3. Rate limiting and abuse prevention strategy?
+4. Can OSS and hosted versions share a single codebase?
+5. What is feasible under Cloudflare D1 constraints?
 
 ---
 
 ## Decision
 
-### 採用方式: 共有 DB + `tenant_id` カラム方式（Pool Model）
+### Adopted Approach: Shared DB + `tenant_id` Column (Pool Model)
 
-全テーブルに `tenant_id` を追加し、すべてのクエリで強制フィルタする。
+Add `tenant_id` to all tables and enforce filtering on every query.
 
-### 1. データ分離方式
+### 1. Data Isolation Approach
 
-| 方式 | 採否 | 理由 |
+| Approach | Adopted? | Reason |
 |---|---|---|
-| **Pool（共有 DB + tenant_id）** | ✅ 採用 | D1 に最適、コスト低、運用シンプル |
-| Silo（テナントごとに別 DB） | ❌ | D1 で 1000 DB は管理不能、無料枠オーバー |
-| Schema-per-tenant | ❌ | SQLite/D1 はマルチスキーマ未対応 |
-| Bridge（混合） | ❌ | 過剰な複雑性 |
+| **Pool (shared DB + tenant_id)** | ✅ Yes | Best fit for D1, low cost, simple ops |
+| Silo (separate DB per tenant) | ❌ | 1000 DBs unmanageable in D1, exceeds free tier |
+| Schema-per-tenant | ❌ | SQLite/D1 doesn't support multi-schema |
+| Bridge (hybrid) | ❌ | Excessive complexity |
 
-### 2. データ分離の強制
+### 2. Data Isolation Enforcement
 
-| レイヤー | 対策 |
+| Layer | Measure |
 |---|---|
-| アプリケーション層 | Drizzle ORM のクエリビルダーラッパーで `tenant_id` 自動付与 |
-| ミドルウェア | Hono の middleware で認証ユーザーから tenant_id 抽出、context に注入 |
-| クエリ | 全 SELECT/UPDATE/DELETE で `WHERE tenant_id = ?` 必須 |
-| 監査 | テストで「tenant_id 不一致時はエラー」を強制 |
+| Application | Drizzle ORM query builder wrapper auto-applies `tenant_id` |
+| Middleware | Hono middleware extracts tenant_id from auth, injects into context |
+| Queries | All SELECT/UPDATE/DELETE require `WHERE tenant_id = ?` |
+| Audit | Tests enforce "error on tenant_id mismatch" |
 
-### 3. 認証強化
+### 3. Auth Strengthening
 
-| 機能 | 実装 |
+| Feature | Implementation |
 |---|---|
-| Sign up | Google OAuth + Magic Link（Better Auth） |
-| API キー | tenant ごとに発行、Chrome 拡張機能から送信 |
-| セッション管理 | Cookie ベース、HttpOnly + Secure + SameSite=Lax |
-| ログアウト | サーバー側セッション失効 |
+| Sign up | Google OAuth + email/password (Better Auth) |
+| API keys | Issued per tenant, sent from Chrome extension |
+| Session mgmt | Cookie-based, HttpOnly + Secure + SameSite=Lax |
+| Logout | Server-side session invalidation |
 
-### 4. レート制限・abuse 対策
+### 4. Rate Limiting & Abuse Prevention
 
-| 対策 | 実装 |
+| Measure | Implementation |
 |---|---|
-| ユーザーごと送信上限 | 月 500 通（無料）、Cloudflare KV でカウンタ管理 |
-| IP ベースのレート制限 | Cloudflare Rate Limiting Rules（無料枠あり） |
-| 不正検知 | Sign up 後 24h は送信上限 10 通に制限 |
-| Abuse 報告窓口 | フッターに `report@mailtrack-pf.dev` リンク |
-| 自動 BAN | 受信者からの opt-out が同一ユーザーで 10 件超 → 自動凍結 |
+| Per-user send limit | 500/month (free), counter in D1 |
+| IP-based rate limiting | Cloudflare Rate Limiting Rules (free tier) |
+| New account restriction | 10-send limit for first 24h after sign up |
+| Abuse reporting | Footer link for abuse reports |
+| Auto-ban | 10+ opt-outs from recipients → automatic account suspension |
 
-### 5. OSS版とのコードベース統一
+### 5. OSS/Hosted Codebase Unity
 
-**シングルコードベース、環境変数で切り替え**:
+**Single codebase, environment variable toggle**:
 
 ```typescript
 // apps/api/src/auth/index.ts
 const isHosted = process.env.HOSTING_MODE === 'hosted';
 
 if (isHosted) {
-  // 公式版: マルチテナント、レート制限、abuse 対策
+  // Hosted: multi-tenant, rate limits, abuse prevention
   app.use(multitenant());
   app.use(rateLimit({ free: 500 }));
 } else {
-  // OSS版: シングルテナント、制限なし
+  // OSS: single tenant, no limits
   app.use(singleTenant({ defaultUserId: 'self' }));
 }
 ```
 
-これにより:
-- OSS版ユーザーは自分のCloudflareでデプロイすれば追加機能不要
-- 公式版は同じコードベースに `HOSTING_MODE=hosted` を設定するだけ
+This means:
+- OSS users deploy on their own Cloudflare with no extra features needed
+- Hosted version uses the same codebase with `HOSTING_MODE=hosted`
 
 ---
 
 ## Rationale
 
-### Pool モデルを選ぶ理由
+### Why the Pool Model
 
-#### 1. Cloudflare D1 の制約
+#### 1. Cloudflare D1 Constraints
 
-D1 の現実的な上限:
-- 1 アカウントで作れる DB 数に上限あり
-- DB ごとの接続オーバーヘッド
-- Silo モデルだと 1,000 ユーザー = 1,000 DB で破綻
+D1 practical limits:
+- Limited number of DBs per account
+- Per-DB connection overhead
+- Silo model at 1,000 users = 1,000 DBs — breaks down
 
-Pool モデルなら **1 DB で 100 万ユーザー**を捌ける（理論値）。
+Pool model supports **1M+ users in a single DB** (theoretical).
 
-#### 2. コスト効率
+#### 2. Cost Efficiency
 
-- Silo: DB あたりのストレージ最低保証で無料枠超過
-- Pool: ユーザー増加に対してストレージは線形、無料枠 5GB で 1 万ユーザー以上
+- Silo: Minimum per-DB storage exceeds free tier
+- Pool: Storage scales linearly; 5GB free tier supports 10K+ users
 
-#### 3. 運用シンプルさ
+#### 3. Operational Simplicity
 
-- マイグレーション: 1 回で全テナントに適用
-- バックアップ: 1 つの DB を取るだけ
-- 監視: 1 つのメトリクスを見るだけ
+- Migrations: Apply once for all tenants
+- Backups: Single DB to back up
+- Monitoring: Single set of metrics
 
-#### 4. データ分離のリスク制御
+#### 4. Data Isolation Risk Control
 
-Pool モデルの最大リスク = **「あるテナントのデータが別テナントから見える」漏洩**。
+Pool model's primary risk = **data leakage between tenants**.
 
-対策:
-- **Drizzle ラッパーでクエリビルダーを抽象化**:
+Mitigation:
+- **Drizzle wrapper abstracts query builder**:
 
 ```typescript
 // packages/db/queries/scoped.ts
@@ -135,16 +135,16 @@ export function scopedQuery(db: D1Database, tenantId: string) {
 }
 ```
 
-- API ハンドラーは生 SQL を書かず、必ずこのラッパー経由
+- API handlers never write raw SQL — always go through this wrapper
 
-### 認証に Better Auth を選ぶ理由
+### Why Better Auth for Authentication
 
-| 候補 | 採否 | 理由 |
+| Candidate | Adopted? | Reason |
 |---|---|---|
-| Better Auth | ✅ | self-host可、Cloudflare Workers対応、Magic Link + OAuth 標準 |
-| Clerk | ❌ | 月額課金、コスト要件と矛盾 |
-| Supabase Auth | ❌ | Supabase 採用しない（ADR-001） |
-| 自前実装 | ❌ | セキュリティ実装は専門家依存推奨 |
+| Better Auth | ✅ | Self-hostable, Cloudflare Workers compatible, OAuth built-in |
+| Clerk | ❌ | Monthly billing conflicts with $0 cost requirement |
+| Supabase Auth | ❌ | Not using Supabase (ADR-001) |
+| Custom implementation | ❌ | Security implementation best left to specialists |
 
 ---
 
@@ -152,31 +152,31 @@ export function scopedQuery(db: D1Database, tenantId: string) {
 
 ### Positive
 
-- ✅ D1 無料枠で 1 万ユーザー以上収容可能
-- ✅ OSS版と公式版のコードベース共通化
-- ✅ 運用負荷が低い（DB 1 つ、認証 1 系統）
-- ✅ tenant_id 強制ラッパーでデータ漏洩リスクを技術的に制御
+- ✅ D1 free tier supports 10K+ users
+- ✅ Shared codebase between OSS and hosted versions
+- ✅ Low operational overhead (1 DB, 1 auth system)
+- ✅ Scoped query wrapper technically controls data leakage risk
 
 ### Negative
 
-- ⚠️ Pool モデルは「特権テナント」を作れない（全員同じ DB）
-  - 緩和策: 大口顧客が出てきたら Phase 3 で Silo モデルへ移行設計
-- ⚠️ tenant_id を query から外すバグが致命的（データ漏洩）
-  - 緩和策: scopedQuery ラッパー必須化、CI で生 SQL の使用を ESLint で検知
-- ⚠️ Better Auth は新しめのライブラリで本番実績が浅い
-  - 緩和策: セキュリティ Issue を GitHub で追跡、必要なら fork 検討
+- ⚠️ Pool model cannot create "privileged tenants" (all share one DB)
+  - Mitigation: Design Silo model migration for Phase 3 if large customers emerge
+- ⚠️ Missing `tenant_id` in a query is a critical bug (data leakage)
+  - Mitigation: scopedQuery wrapper mandatory, CI lint rule to detect raw SQL
+- ⚠️ Better Auth is a newer library with limited production track record
+  - Mitigation: Track GitHub security issues, consider fork if needed
 
 ### Neutral
 
-- 🟡 OSS版ユーザーは `tenant_id` カラムが冗長（常に同じ値）
-  - 影響なし、ストレージ的にも誤差レベル
+- 🟡 OSS users have a redundant `tenant_id` column (always the same value)
+  - No real impact; storage overhead is negligible
 
 ---
 
-## DB スキーマ差分（Phase 1 → Phase 2）
+## DB Schema Diff (Phase 1 → Phase 2)
 
 ```typescript
-// packages/db/schema.ts に追加
+// Added to packages/db/schema.ts
 
 export const tenants = sqliteTable('tenants', {
   id: text('id').primaryKey().$defaultFn(() => createId()),
@@ -190,16 +190,16 @@ export const tenants = sqliteTable('tenants', {
     .default(sql`(unixepoch())`).notNull(),
 });
 
-// 既存テーブルに追加するカラム
+// Columns added to existing tables:
 // users: tenantId, oauthProvider, oauthId
 // emails: tenantId
-// opens, links, clicks, optouts: tenantId（テナント分離強制）
+// opens, links, clicks, optouts: tenantId (enforced tenant isolation)
 
-// API キー管理
+// API key management
 export const apiKeys = sqliteTable('api_keys', {
   id: text('id').primaryKey().$defaultFn(() => createId()),
   tenantId: text('tenant_id').notNull().references(() => tenants.id),
-  keyHash: text('key_hash').notNull(), // ハッシュ化して保存
+  keyHash: text('key_hash').notNull(), // stored as hash
   name: text('name'),
   lastUsedAt: integer('last_used_at', { mode: 'timestamp' }),
   createdAt: integer('created_at', { mode: 'timestamp' })
@@ -209,19 +209,19 @@ export const apiKeys = sqliteTable('api_keys', {
 
 ---
 
-## マイグレーション戦略（Phase 1 → Phase 2）
+## Migration Strategy (Phase 1 → Phase 2)
 
-Phase 1 で個人運用していたデータを Phase 2 で引き継ぐ:
+Carry over data from personal Phase 1 operation to Phase 2:
 
 ```sql
--- 1. tenants テーブル作成
--- 2. 自分のテナントを INSERT
--- 3. 既存 users/emails/opens/links/clicks/optouts に tenant_id カラム追加
--- 4. 既存データに自分の tenant_id を UPDATE
--- 5. tenant_id を NOT NULL 制約に変更
+-- 1. Create tenants table
+-- 2. INSERT own tenant
+-- 3. Add tenant_id column to users/emails/opens/links/clicks/optouts
+-- 4. UPDATE existing data with own tenant_id
+-- 5. Apply NOT NULL constraint on tenant_id
 ```
 
-`packages/db/migrations/0002_multitenant.sql` として記述。
+Implemented in `packages/db/migrations/0002_multitenant.sql`.
 
 ---
 

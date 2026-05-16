@@ -1,29 +1,29 @@
-# Google OAuth 設定手順
+# Google OAuth Setup Guide
 
-## 1. Google Cloud Console でプロジェクト作成
+## 1. Create a Project in Google Cloud Console
 
-- https://console.cloud.google.com
-- 新規プロジェクト作成 or 既存プロジェクト選択
+- Go to https://console.cloud.google.com
+- Create a new project or select an existing one
 
-## 2. OAuth consent screen 設定
+## 2. Configure OAuth Consent Screen
 
 - APIs & Services → OAuth consent screen
 - User Type: **External**
 - App name: `mailtrack-pf`
-- User support email: 自分のメール
-- Authorized domains: `kame-lift.workers.dev`
+- User support email: your email address
+- Authorized domains: your Workers domain (e.g., `kame-lift.workers.dev`)
 - Scopes: `email`, `profile`, `openid`
-- Test users: 自分のGmailアドレスを追加（審査前はテストユーザーのみ使用可能）
+- Test users: add your Gmail address (only test users can sign in before verification)
 
-## 3. OAuth Client ID 作成
+## 3. Create OAuth Client ID
 
 - APIs & Services → Credentials → Create Credentials → OAuth Client ID
 - Application type: **Web application**
 - Name: `mailtrack-pf`
-- Authorized JavaScript origins: `https://mailtrack-pf-api.kame-lift.workers.dev`
-- Authorized redirect URIs: `https://mailtrack-pf-api.kame-lift.workers.dev/api/auth/callback/google`
+- Authorized JavaScript origins: `https://<your-api>.workers.dev`
+- Authorized redirect URIs: `https://<your-api>.workers.dev/api/auth/callback/google`
 
-## 4. Cloudflare Workers にシークレット設定
+## 4. Set Secrets in Cloudflare Workers
 
 ```bash
 echo "<YOUR_CLIENT_ID>" | npx wrangler secret put GOOGLE_CLIENT_ID --config=apps/api/wrangler.toml
@@ -31,16 +31,16 @@ echo "<YOUR_CLIENT_SECRET>" | npx wrangler secret put GOOGLE_CLIENT_SECRET --con
 npx wrangler deploy --config=apps/api/wrangler.toml
 ```
 
-## 5. 動作確認
+## 5. Verify
 
-ブラウザでアクセス:
+Open in browser:
 ```
-https://mailtrack-pf-api.kame-lift.workers.dev/api/auth/sign-in/social?provider=google
+https://<your-api>.workers.dev/api/auth/sign-in/social?provider=google
 ```
-→ Google ログイン画面にリダイレクトされればOK
+→ If you are redirected to the Google login screen, the setup is complete.
 
-## 注意点
+## Notes
 
-- 審査前は「Testing」ステータス。テストユーザーに追加した Google アカウントのみ使用可能（最大100人）
-- 本番公開には Google の審査が必要（数日〜数週間）
-- 審査なしでも email/password 認証は動作する
+- Before verification, the app is in "Testing" status. Only test users added in the consent screen can sign in (max 100 users).
+- Full production access requires Google's verification review (days to weeks).
+- Email/password authentication works without Google verification.

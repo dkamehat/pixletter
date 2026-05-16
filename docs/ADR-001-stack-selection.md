@@ -1,4 +1,4 @@
-﻿# ADR-001: フルスタック技術選定
+# ADR-001: Full-Stack Technology Selection
 
 | Field | Value |
 |---|---|
@@ -9,154 +9,150 @@
 
 ---
 
-## Context（背景）
+## Context
 
-`mailtrack-pf` は個人で運用するメールトラッキング基盤。要件は PRD.md にあるが、技術選定における主要制約は以下：
+`mailtrack-pf` is a personally operated email tracking platform. Key constraints for technology selection:
 
-1. **運用コスト¥0**（NFR-COST-01）
-2. **1 週間スプリントで MVP 完成**（PRD §9.1）
-3. **採用ポートフォリオとして提示**（PRD §7.2）
-4. **Gmail Chrome 拡張・API・DB・ダッシュボードの 4 コンポーネント**を統合
-5. **Edge レイテンシ要件**: ピクセル応答 P95 ≤ 50ms（NFR-PERF-01）
+1. **$0 operating cost** (NFR-COST-01)
+2. **MVP completion in a 1-week sprint** (PRD §9.1)
+3. **4 components to integrate**: Gmail Chrome extension, API, DB, and dashboard
+4. **Edge latency requirement**: Pixel response P95 ≤ 50ms (NFR-PERF-01)
 
-候補となる主要構成:
+Candidate configurations:
 
-| 構成案 | 概要 |
+| Option | Overview |
 |---|---|
-| A | Cloudflare 完全統合（Workers + D1 + Pages） |
-| B | Vercel + Supabase（一般的な Next.js スタック） |
+| A | Cloudflare all-in (Workers + D1 + Pages) |
+| B | Vercel + Supabase (typical Next.js stack) |
 | C | AWS Lambda + DynamoDB + Amplify |
-| D | 自宅 VPS + PostgreSQL + Docker |
+| D | Self-hosted VPS + PostgreSQL + Docker |
 
 ---
 
-## Decision（決定）
+## Decision
 
-**案 A: Cloudflare エコシステム完全統合** を採用する。
+**Option A: Cloudflare ecosystem all-in** is adopted.
 
-### 採用スタック
+### Adopted Stack
 
-| レイヤー | 技術 | バージョン |
+| Layer | Technology | Version |
 |---|---|---|
-| 拡張機能 | Chrome Extension Manifest V3 | latest |
+| Extension | Chrome Extension Manifest V3 | latest |
 | API | Cloudflare Workers + Hono | Hono v4 |
 | DB | Cloudflare D1 (SQLite) | — |
 | ORM | Drizzle ORM | latest |
-| ダッシュボード | Next.js 15 App Router | 15.x |
-| ホスティング | Cloudflare Pages | — |
-| UI | shadcn/ui + Tailwind CSS | latest |
-| 認証 | Better Auth | latest |
-| バリデーション | Zod | v3 |
-| モノレポ | Turborepo + pnpm | latest |
-| テスト | Vitest + Playwright | latest |
-| 観測性 | Sentry + Workers Analytics | — |
-| 言語 | TypeScript (strict mode) | 5.x |
+| Dashboard | React + Vite | latest |
+| Hosting | Cloudflare Pages | — |
+| Auth | Better Auth | latest |
+| Validation | Zod | v3 |
+| Monorepo | Turborepo + pnpm | latest |
+| Testing | Vitest + @cloudflare/vitest-pool-workers | latest |
+| Observability | Workers Analytics | — |
+| Language | TypeScript (strict mode) | 5.x |
 
 ---
 
-## Rationale（判断理由）
+## Rationale
 
-### Cloudflare エコシステムを選ぶ 4 つの根拠
+### 4 Reasons to Choose the Cloudflare Ecosystem
 
-#### 1. 完全無料運用が実質的に保証される
+#### 1. Free-tier operation is practically guaranteed
 
-| サービス | 無料枠 | 個人運用での使用率（試算） |
+| Service | Free Tier | Estimated Usage (personal) |
 |---|---|---|
-| Workers | 10 万 req/日 | 約 0.1% |
-| D1 | 5GB · 500 万 read/日 | 約 0.01% |
-| Pages | 無制限帯域 · 500 ビルド/月 | 約 5% |
+| Workers | 100K req/day | ~0.1% |
+| D1 | 5GB · 5M reads/day | ~0.01% |
+| Pages | Unlimited bandwidth · 500 builds/month | ~5% |
 
-→ 1000 倍以上の余裕。スパイクしても無料枠内。
+> 1000x+ headroom. Even traffic spikes stay within the free tier.
 
-#### 2. エッジ統合によるレイテンシ最適化
+#### 2. Edge integration optimizes latency
 
-Workers と D1 は同一エッジロケーションで実行される。ピクセルリクエスト → DB INSERT → 1×1 GIF 返却が**ネットワーク往復なしで完結**するため、P95 < 30ms 達成が現実的。
+Workers and D1 execute at the same edge location. Pixel request → DB INSERT → 1×1 GIF response completes **without a network round-trip**, making P95 < 30ms realistic.
 
-Vercel + Supabase 構成の場合：
-- Vercel Function (US East) → Supabase (US East): RTT 5〜20ms
-- 日本からのリクエスト: コールドスタート込みで 200ms+ になりうる
+With Vercel + Supabase:
+- Vercel Function (US East) → Supabase (US East): RTT 5–20ms
+- Requests from Asia: 200ms+ with cold start
 
-#### 3. Vercel Hobby の商用利用不可問題を回避
+#### 3. Avoids Vercel Hobby commercial use restriction
 
-[Vercel の利用規約](https://vercel.com/legal/terms) では Hobby プランの商用利用が禁止されている。業務メール送信は「商用」と解釈されうる。Cloudflare Pages は無料プランでも商用利用 OK。
+[Vercel's Terms of Service](https://vercel.com/legal/terms) prohibit commercial use on the Hobby plan. Tracking business emails could be interpreted as "commercial." Cloudflare Pages allows commercial use even on the free plan.
 
-#### 4. Supabase の 7 日休止リスクを回避
+#### 4. Avoids Supabase 7-day pause risk
 
-Supabase 無料プランはプロジェクトが 7 日間アクティビティなしで自動一時停止する。個人運用で送信が散発的な場合に止まるリスクがある。D1 は常時稼働。
-
----
-
-## Considered Alternatives（検討した他案）
-
-### 案 B: Vercel + Supabase
-
-**Pros**:
-- 一般的なスタック、情報が豊富
-- Supabase の認証・ストレージ機能が強力
-- リアルタイム機能（Realtime）が標準
-
-**Cons**:
-- Vercel Hobby の商用利用制約
-- Supabase 7 日休止リスク
-- ピクセル応答レイテンシが Cloudflare に劣る（日本リージョン未対応）
-- 2 つのプロバイダ管理、デプロイパイプラインが複雑化
-
-**判定**: Cons が無料運用要件に直撃するため不採用。
-
-### 案 C: AWS Lambda + DynamoDB + Amplify
-
-**Pros**:
-- スケーラビリティ最高
-- Amazon 関連の経験は PM 面接で語れる
-- 細かい IAM 制御
-
-**Cons**:
-- 無料枠は限定的、長期運用で課金リスク
-- 設定の複雑性（IAM、API Gateway、Lambda、DynamoDB、Amplify）
-- 1 週間スプリントで MVP に到達しにくい
-- ピクセル応答は Lambda コールドスタートで 200ms+ のリスク
-
-**判定**: コストと開発速度で劣るため不採用。Cloudflareでの実装経験を積むことで、他クラウドへの移行設計知識も得られる。
-
-### 案 D: 自宅 VPS + PostgreSQL + Docker
-
-**Pros**:
-- 完全データ主権
-- 学習効果が大きい
-
-**Cons**:
-- 電気代・回線代が事実上のランニングコスト
-- 可用性が VPS / 自宅環境に依存
-- 採用面接で「最新スタックでない」と見られるリスク
-- ピクセル応答のグローバル分散が困難
-
-**判定**: 完全無料を満たさず、可用性も劣るため不採用。
+Supabase's free plan auto-pauses projects after 7 days of inactivity. For personal use with sporadic sending patterns, the DB could stop unexpectedly. D1 is always-on.
 
 ---
 
-## Consequences（結果として起きること）
+## Considered Alternatives
+
+### Option B: Vercel + Supabase
+
+**Pros**:
+- Well-known stack, abundant documentation
+- Supabase has strong auth/storage features
+- Realtime features built-in
+
+**Cons**:
+- Vercel Hobby commercial use restriction
+- Supabase 7-day pause risk
+- Pixel response latency inferior to Cloudflare (no Asia region)
+- Two providers to manage, complex deploy pipeline
+
+**Verdict**: Cons directly conflict with free-tier operation requirement — rejected.
+
+### Option C: AWS Lambda + DynamoDB + Amplify
+
+**Pros**:
+- Maximum scalability
+- Fine-grained IAM controls
+
+**Cons**:
+- Limited free tier, long-term billing risk
+- Configuration complexity (IAM, API Gateway, Lambda, DynamoDB, Amplify)
+- MVP unlikely within 1-week sprint
+- Lambda cold start: 200ms+ pixel response risk
+
+**Verdict**: Inferior on cost and development speed — rejected.
+
+### Option D: Self-hosted VPS + PostgreSQL + Docker
+
+**Pros**:
+- Complete data sovereignty
+- High learning value
+
+**Cons**:
+- Electricity/bandwidth costs as de facto running costs
+- Availability depends on VPS/home environment
+- No global distribution for pixel response
+
+**Verdict**: Cannot meet $0 requirement, availability also inferior — rejected.
+
+---
+
+## Consequences
 
 ### Positive
 
-- ✅ 月額¥0 運用が確実に達成可能
-- ✅ ピクセル応答 P95 < 50ms が現実的
-- ✅ デプロイパイプラインが Cloudflare 1 社で完結
-- ✅ TypeScript 統一によるエンドツーエンド型安全性
-- ✅ Hono on Workers は Anthropic 製 LLM API ラッパーとの相性が良い（Phase 2 拡張時）
+- ✅ $0/month operation is reliably achievable
+- ✅ Pixel response P95 < 50ms is realistic
+- ✅ Deploy pipeline completes within a single Cloudflare vendor
+- ✅ End-to-end type safety with TypeScript
+- ✅ Hono on Workers has good compatibility with LLM API wrappers (Phase 2 extensibility)
 
 ### Negative
 
-- ⚠️ Cloudflare ベンダーロックイン（D1 の SQL 方言、Workers ランタイム特有 API）
-  - 緩和策: ORM レイヤー（Drizzle）と Hono で抽象化、ロジック層は移植可能に保つ
-- ⚠️ D1 は SQLite ベース、複雑な JSON クエリや大量同時書き込みは苦手
-  - 緩和策: 現スキーマでは問題なし。将来必要なら Cloudflare D2（PostgreSQL 互換、2026 年発表予定）へ移行
-- ⚠️ Cloudflare 障害時に全機能停止
-  - 緩和策: Cloudflare SLA 99.99%、過去 12 ヶ月の実績で個人運用には十分
+- ⚠️ Cloudflare vendor lock-in (D1 SQL dialect, Workers runtime-specific APIs)
+  - Mitigation: Abstraction via ORM layer (Drizzle) and Hono keeps logic portable
+- ⚠️ D1 is SQLite-based; complex JSON queries and heavy concurrent writes are limited
+  - Mitigation: Current schema has no issues. Can migrate to Cloudflare D2 (PostgreSQL-compatible) if needed
+- ⚠️ Full outage if Cloudflare goes down (single point of failure)
+  - Mitigation: Cloudflare SLA 99.99%, sufficient for personal operation
 
 ### Neutral
 
-- 🟡 採用面接で「なぜ Cloudflare？」と聞かれる可能性が高い
-  - → これは ADR を見せられるので**強み**になる
+- 🟡 Likely to be asked "Why Cloudflare?" in interviews
+  - → This ADR serves as a documented answer — turns it into a **strength**
 
 ---
 

@@ -1,38 +1,38 @@
-# SETUP.md — Day 1 初期セットアップ手順
+# SETUP.md — Day 1 Initial Setup Guide
 
-このドキュメントは `mailtrack-pf` の開発環境を 0 から構築するためのチェックリスト。
-**所要時間: 約 60〜90 分**
+Step-by-step checklist to set up the `mailtrack-pf` development environment from scratch.
+**Estimated time: 60–90 minutes**
 
 ---
 
-## 前提条件
+## Prerequisites
 
-- Node.js v20 以上
-- pnpm v9 以上（`npm install -g pnpm`）
+- Node.js v20+
+- pnpm v9+ (`npm install -g pnpm`)
 - Git
-- Cloudflare アカウント（無料）
-- GitHub アカウント
-- Chrome ブラウザ（拡張機能の動作確認用）
+- Cloudflare account (free)
+- GitHub account
+- Chrome browser (for extension testing)
 
 ---
 
-## ステップ 1: GitHub リポジトリ作成（5 分）
+## Step 1: GitHub Repository (5 min)
 
 ```bash
-# GitHub 上で新規リポジトリを作成（mailtrack-pf, Public）
+# Create a new repo on GitHub (mailtrack-pf, Public)
 
-# ローカルで初期化
+# Initialize locally
 mkdir mailtrack-pf && cd mailtrack-pf
 git init
-git remote add origin git@github.com:dkamehat/mailtrack-pf.git
+git remote add origin git@github.com:<your-username>/mailtrack-pf.git
 ```
 
 ---
 
-## ステップ 2: Turborepo モノレポ初期化（10 分）
+## Step 2: Turborepo Monorepo Init (10 min)
 
 ```bash
-# package.json 作成
+# package.json
 cat > package.json <<'EOF'
 {
   "name": "mailtrack-pf",
@@ -105,7 +105,7 @@ coverage
 .vercel
 EOF
 
-# ディレクトリ構造
+# Directory structure
 mkdir -p apps/{extension,api,dashboard}
 mkdir -p packages/{db,shared,ui}
 mkdir -p docs
@@ -116,10 +116,10 @@ pnpm install
 
 ---
 
-## ステップ 3: TypeScript 共通設定（5 分）
+## Step 3: Shared TypeScript Config (5 min)
 
 ```bash
-# ルート tsconfig
+# Root tsconfig
 cat > tsconfig.json <<'EOF'
 {
   "compilerOptions": {
@@ -141,7 +141,7 @@ EOF
 
 ---
 
-## ステップ 4: DB パッケージセットアップ（15 分）
+## Step 4: DB Package Setup (15 min)
 
 ```bash
 cd packages/db
@@ -200,46 +200,43 @@ cat > tsconfig.json <<'EOF'
 }
 EOF
 
-# schema.ts はすでに用意済み
-# （/home/claude/mailtrack-pf/packages/db/schema.ts）
-
 cd ../..
 pnpm install
 ```
 
 ---
 
-## ステップ 5: Cloudflare D1 データベース作成（10 分）
+## Step 5: Cloudflare D1 Database (10 min)
 
 ```bash
-# Cloudflare CLI（wrangler）をインストール
+# Install wrangler
 pnpm add -D -w wrangler
 
-# Cloudflare にログイン
+# Login to Cloudflare
 pnpm wrangler login
 
-# D1 データベース作成
+# Create D1 database
 pnpm wrangler d1 create mailtrack-pf-db
-# 出力された database_id をメモする → 後で wrangler.toml に記述
+# Note the database_id from output → add to wrangler.toml
 
-# マイグレーション生成
+# Generate migrations
 cd packages/db
 pnpm drizzle-kit generate
 
-# マイグレーション適用（ローカル）
+# Apply migrations (local)
 cd ../..
 pnpm wrangler d1 execute mailtrack-pf-db --local --file=packages/db/migrations/0000_init.sql
 
-# マイグレーション適用（リモート / 本番）
+# Apply migrations (remote / production)
 pnpm wrangler d1 execute mailtrack-pf-db --remote --file=packages/db/migrations/0000_init.sql
 
-# 確認
+# Verify
 pnpm wrangler d1 execute mailtrack-pf-db --remote --command="SELECT name FROM sqlite_master WHERE type='table';"
 ```
 
 ---
 
-## ステップ 6: 環境変数の設定（5 分）
+## Step 6: Environment Variables (5 min)
 
 ```bash
 # .env.example
@@ -260,14 +257,14 @@ SLACK_WEBHOOK_URL=
 SENTRY_DSN=
 EOF
 
-# .env を作成（gitignore 済み）
+# Create .env (already in .gitignore)
 cp .env.example .env
-# → 各値を埋める
+# → Fill in your values
 ```
 
 ---
 
-## ステップ 7: GitHub Actions CI 設定（10 分）
+## Step 7: GitHub Actions CI (10 min)
 
 ```bash
 cat > .github/workflows/ci.yml <<'EOF'
@@ -299,53 +296,40 @@ EOF
 
 ---
 
-## ステップ 8: 初回コミット・プッシュ（5 分）
+## Step 8: Initial Commit & Push (5 min)
 
 ```bash
-# ドキュメントをコピー
-# /home/claude/mailtrack-pf/ 配下のファイルをすべて配置済みとする
-
 git add .
-git commit -m "feat: initial setup with PRD, ADRs, and DB schema
-
-- Add PRD.md with requirements (FR/NFR/KPI)
-- Add ADR-001 (stack selection rationale)
-- Add ADR-002 (zero-cost operations design)
-- Add Drizzle DB schema for D1
-- Setup Turborepo monorepo structure
-- Add CI workflow"
-
+git commit -m "feat: initial setup with ADRs and DB schema"
 git push -u origin main
 ```
 
 ---
 
-## ✅ Day 1 完了チェックリスト
+## Day 1 Completion Checklist
 
-- [ ] GitHub リポジトリ作成・初回プッシュ
-- [ ] Turborepo モノレポ初期化
-- [ ] `pnpm install` 成功
-- [ ] `packages/db/schema.ts` 配置
-- [ ] Cloudflare D1 データベース作成
-- [ ] マイグレーション適用成功
-- [ ] `pnpm wrangler d1 execute` でテーブル確認
-- [ ] `docs/PRD.md` 配置
-- [ ] `docs/ADR-001-stack-selection.md` 配置
-- [ ] `docs/ADR-002-free-tier-operations.md` 配置
-- [ ] `README.md` 配置
-- [ ] GitHub Actions CI が green
+- [ ] GitHub repository created and pushed
+- [ ] Turborepo monorepo initialized
+- [ ] `pnpm install` succeeds
+- [ ] `packages/db/schema.ts` in place
+- [ ] Cloudflare D1 database created
+- [ ] Migrations applied successfully
+- [ ] `pnpm wrangler d1 execute` confirms tables
+- [ ] `docs/ADR-001-stack-selection.md` in place
+- [ ] `docs/ADR-002-free-tier-operations.md` in place
+- [ ] `README.md` in place
+- [ ] GitHub Actions CI is green
 
 ---
 
-## 次のステップ: Day 2
+## Next: Day 2
 
-`apps/api/` で Cloudflare Workers + Hono の実装を開始する。
-具体的には:
+Start implementing Cloudflare Workers + Hono in `apps/api/`:
 
-1. `apps/api/src/index.ts` で Hono アプリ初期化
-2. `POST /api/emails` エンドポイント（トラッキング ID 払い出し）
-3. `GET /pixel/:id.gif` エンドポイント（開封ログ + 透明 GIF 返却）
-4. `GET /r/:id` エンドポイント（クリックログ + 302 リダイレクト）
-5. Vitest でユニットテスト
-6. `wrangler dev` でローカル動作確認
-7. `wrangler deploy` で本番デプロイ
+1. Initialize Hono app in `apps/api/src/index.ts`
+2. `POST /api/emails` endpoint (tracking ID issuance)
+3. `GET /pixel/:id.gif` endpoint (open logging + transparent GIF)
+4. `GET /r/:id` endpoint (click logging + 302 redirect)
+5. Unit tests with Vitest
+6. Local verification with `wrangler dev`
+7. Production deploy with `wrangler deploy`
