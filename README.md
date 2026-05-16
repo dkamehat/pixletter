@@ -1,10 +1,10 @@
-﻿# 📬 mailtrack-pf
+# 📬 mailtrack-pf
 
 > **Open-source email tracking, $0/month, hosted on Cloudflare**
 
-Gmail からの送信メールの**開封・リンククリックを追跡**できる Chrome 拡張機能 + ダッシュボード。データ主権を自分側に保持しつつ、月額運用コスト ¥0 で稼働させる。
+Chrome extension + dashboard for tracking opens and link clicks on emails sent from Gmail. Keep your tracking data sovereign while running at $0/month.
 
-[![CI](https://github.com/dkamehat/mailtrack-pf/actions/workflows/ci.yml/badge.svg)](https://github.com/dkamehat/mailtrack-pf/actions) [![Cost](https://img.shields.io/badge/Monthly%20Cost-%C2%A50-brightgreen)]() [![License](https://img.shields.io/badge/License-AGPL--3.0-blue)]() [![Tests](https://img.shields.io/badge/Tests-29%20passing-brightgreen)]()
+[![CI](https://github.com/dkamehat/mailtrack-pf/actions/workflows/ci.yml/badge.svg)](https://github.com/dkamehat/mailtrack-pf/actions) [![Cost](https://img.shields.io/badge/Monthly%20Cost-%240-brightgreen)]() [![License](https://img.shields.io/badge/License-AGPL--3.0-blue)]() [![Tests](https://img.shields.io/badge/Tests-29%20passing-brightgreen)]()
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/dkamehat/mailtrack-pf)
 
@@ -30,7 +30,7 @@ Built in one week as a solo PM. 29 tests, TypeScript strict mode, CI green. The 
 
 ---
 
-## 🏗️ アーキテクチャ
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────┐    ┌─────────────────────┐
@@ -51,89 +51,89 @@ Built in one week as a solo PM. 29 tests, TypeScript strict mode, CI green. The 
                   └───────────────┘      └──────────────────┘
 ```
 
-**全レイヤー Cloudflare 上で完結。エッジで DB アクセスするためピクセル応答 P95 < 30ms。**
+**Entire stack runs on Cloudflare. Edge-level DB access keeps pixel response P95 < 30ms.**
 
 ---
 
-## 📦 機能一覧
+## 📦 Features
 
-### API（Cloudflare Workers + Hono）v0.3.0
-- `POST /api/emails` — メール登録、tracking_id + pixel URL + tracked links + opt-out URL を返却
-- `GET /pixel/:id.gif` — 1×1 透明 GIF 返却 + 開封記録（IP は SHA-256 ハッシュ化）
-- `GET /r/:id` — 原 URL に 302 リダイレクト + クリック記録
-- `GET /api/emails` — 送信履歴一覧（開封・クリック数付き、pagination 対応）
-- `GET /api/emails/:id` — 個別メール詳細（開封タイムライン + リンク別クリック数）
-- `POST /api/emails/:id/optout` — 受信者オプトアウト（API 経由）
-- `GET/POST /optout/:emailId` — 受信者向け公開 opt-out ページ（認証不要）
-- `GET /api/account/usage` — 月間送信数 / 上限
-- `DELETE /api/account/data` — GDPR データ削除
-- `GET /api/account/data` — GDPR データエクスポート
-- `POST /api/auth/*` — Better Auth 認証（hosted モード）
-- `GET /privacy` — プライバシーポリシー
-- `GET /terms` — 利用規約
+### API (Cloudflare Workers + Hono) v0.3.0
+- `POST /api/emails` — Register email; returns tracking_id, pixel URL, tracked links, and opt-out URL
+- `GET /pixel/:id.gif` — Serve 1×1 transparent GIF + record open event (IP is SHA-256 hashed)
+- `GET /r/:id` — 302 redirect to original URL + record click event
+- `GET /api/emails` — List sent emails with open/click counts (paginated)
+- `GET /api/emails/:id` — Email detail with open timeline + per-link click counts
+- `POST /api/emails/:id/optout` — Recipient opt-out (API)
+- `GET/POST /optout/:emailId` — Public opt-out page for recipients (no auth required)
+- `GET /api/account/usage` — Monthly send count / limit
+- `DELETE /api/account/data` — GDPR data deletion
+- `GET /api/account/data` — GDPR data export
+- `POST /api/auth/*` — Better Auth authentication (hosted mode)
+- `GET /privacy` — Privacy policy
+- `GET /terms` — Terms of service
 
-### Chrome 拡張機能（Manifest V3）
-- Gmail Compose 画面に Track ON/OFF トグルボタン
-- 送信時に API POST → ピクセル自動挿入 + URL 書き換え
-- Sent フォルダに ✓（未読）/ ✓✓（既読）ステータスアイコン
-- 設定ポップアップ（API URL、API Key、Slack Webhook）
+### Chrome Extension (Manifest V3)
+- Track ON/OFF toggle button in Gmail Compose
+- Auto-injects tracking pixel + rewrites URLs on send
+- ✓ (unread) / ✓✓ (read) status icons in Sent folder
+- Settings popup (API URL, API Key, Slack Webhook)
 
 ![Gmail Compose with tracking](docs/screenshots/08-gmail-compose.png)
 
-### ダッシュボード（React + Vite）
-- メール送信履歴の時系列表示
-- 各メールの開封タイムライン（UserAgent・Gmail Proxy 判定）
-- 開封率・クリック率の集計表示
-- 受信者・件名・タグで検索・フィルタ
+### Dashboard (React + Vite)
+- Chronological email send history
+- Per-email open timeline (UserAgent + Gmail Proxy detection)
+- Aggregate open rate / click rate
+- Search and filter by recipient, subject, or tag
 
-### マルチテナント認証（Phase 2）
-- Better Auth 統合（email/password + Google OAuth）
-- API キー認証（Chrome 拡張機能用、SHA-256 ハッシュ保存）
-- `HOSTING_MODE` 切り替え: self（OSS 版） / hosted（公式版）
-- 月間送信上限（無料: 500 通 / 月、新規 24h: 10 通）
-- 自動 BAN（opt-out 10 件超で凍結）
-- GDPR データ削除・エクスポート
+### Multi-Tenant Auth (Phase 2)
+- Better Auth integration (email/password + Google OAuth)
+- API key auth for Chrome extension (SHA-256 hashed storage)
+- `HOSTING_MODE` toggle: self (OSS) / hosted (official)
+- Monthly send limits (free: 500/month, new accounts: 10/24h)
+- Auto-ban (suspended after 10+ opt-outs)
+- GDPR data deletion and export
 
-### 観測性・セキュリティ
-- X-Request-ID / X-Response-Time ヘッダー
-- レート制限（100 req/min per IP）
-- Slack Webhook 開封通知（同一メール 1 時間以内は抑制）
-- CORS origin 制限（`ALLOWED_ORIGINS` 環境変数）
-- Cloudflare Workers Analytics（wrangler.toml で有効化済み）
+### Observability & Security
+- X-Request-ID / X-Response-Time headers
+- Rate limiting (100 req/min per IP)
+- Slack webhook open notifications (throttled to 1/hour per email)
+- CORS origin restriction (`ALLOWED_ORIGINS` env var)
+- Cloudflare Workers Analytics (enabled in wrangler.toml)
 
 ---
 
-## 💰 ¥0 運用の仕組み
+## 💰 Zero-Cost Infrastructure
 
-| サービス | 無料枠 | 想定使用 | 余裕度 |
+| Service | Free Tier | Expected Use | Headroom |
 |---|---|---|---|
-| Cloudflare Workers | 10 万 req/日 | 100 req/日 | **1000×** |
-| Cloudflare D1 | 5GB · 500 万 read/日 | < 1MB · 100 read/日 | **5 万×** |
-| Cloudflare Pages | 帯域無制限 · 500 ビルド/月 | 30 ビルド/月 | **16×** |
-| GitHub Public | 無制限 | — | ∞ |
+| Cloudflare Workers | 100K req/day | 100 req/day | **1000×** |
+| Cloudflare D1 | 5GB · 5M reads/day | < 1MB · 100 reads/day | **50,000×** |
+| Cloudflare Pages | Unlimited bandwidth · 500 builds/month | 30 builds/month | **16×** |
+| GitHub Public | Unlimited | — | ∞ |
 
-**合計: ¥0/月。SaaS 比 3 年累計で $180〜$864 削減（[ADR-002](docs/ADR-002-free-tier-operations.md)）**
+**Total: $0/month. Saves $180–$864 over 3 years vs SaaS competitors ([ADR-002](docs/ADR-002-free-tier-operations.md))**
 
 ---
 
-## 🛠️ 技術スタック
+## 🛠️ Tech Stack
 
-| レイヤー | 技術 |
+| Layer | Technology |
 |---|---|
-| Chrome 拡張 | Manifest V3 · Service Worker · Content Script |
+| Chrome Extension | Manifest V3 · Service Worker · Content Script |
 | API | Cloudflare Workers · Hono v4 |
 | DB | Cloudflare D1 (SQLite) · Drizzle ORM |
-| ダッシュボード | React 19 · Vite 6 · Cloudflare Pages |
-| モノレポ | Turborepo · pnpm |
-| 認証 | Better Auth (D1 直接接続) |
-| テスト | Vitest · @cloudflare/vitest-pool-workers (29 tests) |
-| 観測性 | X-Request-ID · X-Response-Time · Workers Analytics |
+| Dashboard | React 19 · Vite 6 · Cloudflare Pages |
+| Monorepo | Turborepo · pnpm |
+| Auth | Better Auth (direct D1 connection) |
+| Testing | Vitest · @cloudflare/vitest-pool-workers (29 tests) |
+| Observability | X-Request-ID · X-Response-Time · Workers Analytics |
 | CI/CD | GitHub Actions |
-| ライセンス | AGPL-3.0-or-later |
+| License | AGPL-3.0-or-later |
 
 ---
 
-## 🚀 セットアップ
+## 🚀 Setup
 
 ### One-Click Deploy (Fork & Deploy)
 
@@ -149,31 +149,31 @@ git clone https://github.com/dkamehat/mailtrack-pf.git
 cd mailtrack-pf
 pnpm install
 
-# Cloudflare D1 セットアップ
+# Cloudflare D1 Setup
 pnpm wrangler login
 pnpm wrangler d1 create mailtrack-pf-db
-# → wrangler.toml の database_id を更新
+# → Update database_id in wrangler.toml
 
-# マイグレーション
+# Migrations
 pnpm db:generate
-pnpm db:migrate:local    # ローカル D1
-pnpm db:migrate:remote   # 本番 D1
-pnpm db:seed:self        # self テナント + ユーザー投入
+pnpm db:migrate:local    # Local D1
+pnpm db:migrate:remote   # Production D1
+pnpm db:seed:self        # Seed self tenant + user
 
-# 開発サーバー起動
+# Start dev server
 pnpm dev
 
-# テスト
+# Run tests
 pnpm test
 pnpm type-check
 
-# Chrome 拡張のインストール
-# 1. chrome://extensions を開く
-# 2. 「デベロッパーモード」を ON
-# 3. 「パッケージ化されていない拡張機能を読み込む」で apps/extension/ を選択
+# Install Chrome Extension
+# 1. Open chrome://extensions
+# 2. Enable Developer Mode
+# 3. Click "Load unpacked" and select apps/extension/
 ```
 
-詳細は [SETUP.md](SETUP.md) 参照。
+See [SETUP.md](SETUP.md) for details.
 
 ---
 
@@ -206,26 +206,24 @@ pnpm type-check
 
 ---
 
-## 📚 ドキュメント
+## 📚 Documentation
 
-| ドキュメント | 内容 |
+| Document | Description |
 |---|---|
-| [ADR-001](docs/ADR-001-stack-selection.md) | 技術スタック選定の意思決定記録 |
-| [ADR-002](docs/ADR-002-free-tier-operations.md) | 無料運用設計の意思決定記録 |
-| [ADR-003](docs/phase2/ADR-003-multi-tenant-architecture.md) | マルチテナント設計 |
-| [ADR-004](docs/phase2/ADR-004-oss-licensing-and-hosting-model.md) | AGPLv3 採用 |
-| [CHECKLIST.md](CHECKLIST.md) | Day 1 実行チェックリスト |
-| [API-REFERENCE.md](docs/API-REFERENCE.md) | API リファレンス |
-| [GOOGLE-OAUTH-SETUP.md](docs/GOOGLE-OAUTH-SETUP.md) | Google OAuth セットアップガイド |
-| [SELF-HOST-GUIDE.md](docs/SELF-HOST-GUIDE.md) | セルフホスト手順 |
-| [SHOW-HN.md](docs/SHOW-HN.md) | Show HN 投稿文 |
-| [CLAUDE-CODE-CASE-STUDY.md](docs/CLAUDE-CODE-CASE-STUDY.md) | Claude Code 活用事例 |
+| [ADR-001](docs/ADR-001-stack-selection.md) | Technical stack selection ADR |
+| [ADR-002](docs/ADR-002-free-tier-operations.md) | Free-tier operations ADR |
+| [ADR-003](docs/phase2/ADR-003-multi-tenant-architecture.md) | Multi-tenant architecture |
+| [ADR-004](docs/phase2/ADR-004-oss-licensing-and-hosting-model.md) | AGPLv3 licensing rationale |
+| [CHECKLIST.md](CHECKLIST.md) | Day 1 execution checklist |
+| [API-REFERENCE.md](docs/API-REFERENCE.md) | API reference |
+| [GOOGLE-OAUTH-SETUP.md](docs/GOOGLE-OAUTH-SETUP.md) | Google OAuth setup guide |
+| [SELF-HOST-GUIDE.md](docs/SELF-HOST-GUIDE.md) | Self-hosting guide |
+| [SHOW-HN.md](docs/SHOW-HN.md) | Show HN submission draft |
+| [CLAUDE-CODE-CASE-STUDY.md](docs/CLAUDE-CODE-CASE-STUDY.md) | Claude Code case study |
 
 ---
 
 ## ⚠️ Responsible Use & Legal Considerations
-
-> *Legal and ethics sections are written in English for international accessibility. 他のセクションは日本語です。*
 
 Email tracking is a legally and ethically sensitive practice. This tool is designed for legitimate use cases only.
 
@@ -250,9 +248,9 @@ If you become aware of such misuse, please report it via GitHub Issues.
 
 ### Privacy & Compliance
 
-- **GDPR (EU)**: The sender must inform recipients that tracking is in use. IP addresses are pseudonymized via SHA-256 hashing (not fully anonymized; this enables deduplication while reducing direct PII exposure). Full data deletion available via [`DELETE /api/account/data`](https://github.com/dkamehat/mailtrack-pf/blob/2a06328/apps/api/src/routes/gdpr.ts) (GDPR Article 17).
-- **個人情報保護法 (Japan)**: Raw IP addresses are never stored — only SHA-256 [pseudonymized hashes](https://github.com/dkamehat/mailtrack-pf/blob/2a06328/apps/api/src/lib/hash.ts). Email body content is never stored.
-- **CAN-SPAM (US)**: Opt-out mechanism is mandatory for commercial emails. This tool provides a [one-click opt-out page](https://github.com/dkamehat/mailtrack-pf/blob/2a06328/apps/api/src/routes/optout.ts) at `/optout/:emailId`.
+- **GDPR (EU)**: The sender must inform recipients that tracking is in use. IP addresses are pseudonymized via SHA-256 hashing (not fully anonymized; this enables deduplication while reducing direct PII exposure). Full data deletion available via [`DELETE /api/account/data`](apps/api/src/routes/gdpr.ts) (GDPR Article 17).
+- **APPI (Japan)**: Raw IP addresses are never stored — only SHA-256 [pseudonymized hashes](apps/api/src/lib/hash.ts). Email body content is never stored.
+- **CAN-SPAM (US)**: Opt-out mechanism is mandatory for commercial emails. This tool provides a [one-click opt-out page](apps/api/src/routes/optout.ts) at `/optout/:emailId`.
 
 ### Recipients Can Block Tracking
 
@@ -273,9 +271,9 @@ These are not bugs — they are features that protect recipient autonomy.
 
 These are not just policies — they are **enforced in code**:
 
-- **Opt-out link in every email**: The API response always includes an `optoutUrl` and `optoutHtml` footer. In hosted mode, injection is [forced regardless of user settings](https://github.com/dkamehat/mailtrack-pf/blob/855442e/apps/api/src/routes/emails.ts#L176). Recipients can stop tracking with one click.
-- **Notification rate limiting**: Slack open notifications are [suppressed within a 1-hour window](https://github.com/dkamehat/mailtrack-pf/blob/855442e/apps/api/src/lib/notify.ts#L17) per email to prevent notification spam.
-- **Auto-ban on abuse**: Accounts receiving [more than 10 opt-outs are automatically suspended](https://github.com/dkamehat/mailtrack-pf/blob/855442e/apps/api/src/lib/abuse.ts#L6). No manual intervention required.
+- **Opt-out link in every email**: The API response always includes an `optoutUrl` and `optoutHtml` footer. In hosted mode, injection is [forced regardless of user settings](apps/api/src/routes/emails.ts#L176). Recipients can stop tracking with one click.
+- **Notification rate limiting**: Slack open notifications are [suppressed within a 1-hour window](apps/api/src/lib/notify.ts#L17) per email to prevent notification spam.
+- **Auto-ban on abuse**: Accounts receiving [more than 10 opt-outs are automatically suspended](apps/api/src/lib/abuse.ts#L6). No manual intervention required.
 
 ### Data Storage
 
@@ -283,7 +281,7 @@ These are not just policies — they are **enforced in code**:
 - IP addresses are **pseudonymized** (SHA-256 hash) — never stored raw
 - Email body content is **never stored** — only metadata (subject, recipient, timestamps)
 - Recipients can opt out at any time via `/optout/:emailId`
-- Full data export and deletion via [`/api/account/data`](https://github.com/dkamehat/mailtrack-pf/blob/2a06328/apps/api/src/routes/gdpr.ts)
+- Full data export and deletion via [`/api/account/data`](apps/api/src/routes/gdpr.ts)
 
 ### Security
 
@@ -295,7 +293,7 @@ THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPL
 
 By deploying or using mailtrack-pf, you acknowledge:
 
-1. **You are solely responsible** for compliance with all applicable laws (GDPR, CAN-SPAM, 個人情報保護法, etc.) in every jurisdiction where your recipients are located.
+1. **You are solely responsible** for compliance with all applicable laws (GDPR, CAN-SPAM, APPI, etc.) in every jurisdiction where your recipients are located.
 2. **You must inform recipients** where legally required. The tool provides opt-out mechanisms, but the legal obligation to disclose tracking rests with you, not the software authors.
 3. **The authors do not provide legal advice.** Consult a qualified attorney for compliance guidance specific to your use case and jurisdiction.
 4. **Abuse reports may result in public identification.** If prohibited use (as defined above) is reported and verified, the authors reserve the right to publicly disavow the deployment.
@@ -407,31 +405,31 @@ All tracking data is permanently removed. The tenant record is preserved in susp
 
 ---
 
-## 📅 開発ロードマップ
+## 📅 Roadmap
 
-- [x] **Day 1**: PRD・ADR・DB スキーマ・モノレポ初期化・D1 セットアップ
-- [x] **Day 2**: Workers API 実装（6 エンドポイント）+ Vitest
-- [x] **Day 3**: Chrome 拡張 MV3（Track トグル・ピクセル挿入・URL 書き換え）
-- [x] **Day 4**: Sent フォルダ ✓✓ アイコン + React ダッシュボード
-- [x] **Day 5**: Slack 通知 + レート制限
-- [x] **Day 6**: 観測性（Request-ID・Response-Time）+ テスト強化（5→18）
-- [x] **Day 7**: README 整備 + 公開
+- [x] **Day 1**: PRD, ADRs, DB schema, monorepo init, D1 setup
+- [x] **Day 2**: Workers API implementation (6 endpoints) + Vitest
+- [x] **Day 3**: Chrome extension MV3 (Track toggle, pixel injection, URL rewriting)
+- [x] **Day 4**: Sent folder ✓✓ icons + React dashboard
+- [x] **Day 5**: Slack notifications + rate limiting
+- [x] **Day 6**: Observability (Request-ID, Response-Time) + test expansion (5→18)
+- [x] **Day 7**: README polish + public release
 
-### Phase 2: OSS 公開 + 公式ホスティング
-- [x] Better Auth マルチテナント認証（ba_user/session/account/verification）
-- [x] Sign up → テナント自動作成 (databaseHooks)
-- [x] tracking.ts tenant_id 動的化
-- [x] 月間送信上限 + 24h 新規制限
-- [x] opt-out URL 強制挿入 + 公開 opt-out ページ
-- [x] 自動 BAN（opt-out 10 件超）
-- [x] GDPR データ削除 / エクスポート API
-- [x] プライバシーポリシー + 利用規約
-- [x] ランディングページ + Sign up / Login UI
-- [x] 利用状況ダッシュボード（UsageBanner）
-- [x] Deploy to Cloudflare ボタン
-- [x] オンボーディングフロー
-- [ ] `npx create-mailtrack@latest` セットアップウィザード
-- [ ] 技術ドキュメントサイト
+### Phase 2: OSS Release + Official Hosting
+- [x] Better Auth multi-tenant authentication (ba_user/session/account/verification)
+- [x] Sign up → automatic tenant creation (databaseHooks)
+- [x] Dynamic tenant_id in tracking.ts
+- [x] Monthly send limits + 24h new-account restriction
+- [x] Forced opt-out URL injection + public opt-out page
+- [x] Auto-ban (suspended after 10+ opt-outs)
+- [x] GDPR data deletion / export API
+- [x] Privacy policy + terms of service
+- [x] Landing page + Sign up / Login UI
+- [x] Usage dashboard (UsageBanner)
+- [x] Deploy to Cloudflare button
+- [x] Onboarding flow
+- [ ] `npx create-mailtrack@latest` setup wizard
+- [ ] Documentation site
 
 ---
 
