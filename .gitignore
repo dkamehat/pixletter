@@ -70,3 +70,7 @@ replacements.txt
 # === CLAUDE.md and .claude/ — AI collaboration logs (5/18 教訓4) ===
 CLAUDE.md
 .claude/
+
+# Python cache
+__pycache__/
+*.pyc
