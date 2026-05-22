@@ -218,7 +218,6 @@ See [SETUP.md](SETUP.md) for details.
 | [API-REFERENCE.md](docs/API-REFERENCE.md) | API reference |
 | [GOOGLE-OAUTH-SETUP.md](docs/GOOGLE-OAUTH-SETUP.md) | Google OAuth setup guide |
 | [SELF-HOST-GUIDE.md](docs/SELF-HOST-GUIDE.md) | Self-hosting guide |
-| [SHOW-HN.md](docs/SHOW-HN.md) | Show HN submission draft |
 | [CLAUDE-CODE-CASE-STUDY.md](docs/CLAUDE-CODE-CASE-STUDY.md) | Claude Code case study |
 
 ---
