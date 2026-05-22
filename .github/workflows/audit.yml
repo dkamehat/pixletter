@@ -1,0 +1,32 @@
+name: L1 Audit
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore audit patterns from secret
+        env:
+          AUDIT_PATTERNS: ${{ secrets.AUDIT_PATTERNS }}
+        run: |
+          if [ -z "$AUDIT_PATTERNS" ]; then
+            echo "ERROR: AUDIT_PATTERNS secret is not configured." >&2
+            echo "Set it in repo Settings > Secrets and variables > Actions." >&2
+            exit 2
+          fi
+          printf '%s' "$AUDIT_PATTERNS" > .audit-patterns.txt
+
+      - name: Run L1 audit
+        run: python3 scripts/audit.py --all

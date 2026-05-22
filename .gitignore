@@ -60,3 +60,13 @@ TODO-private.md
 # Local databases
 *.sqlite
 *.sqlite-journal
+
+# === Audit protection (added 2026-05-18) ===
+.audit-patterns.txt
+sanitize-map.txt
+replacements.txt
+*.bak
+
+# === CLAUDE.md and .claude/ — AI collaboration logs (5/18 教訓4) ===
+CLAUDE.md
+.claude/
