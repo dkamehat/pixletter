@@ -5,7 +5,7 @@
  * Cross-domain Cookie 問題を回避するためトークンベースで認証する。
  */
 
-const TOKEN_KEY = 'mailtrack_token';
+const TOKEN_KEY = 'pixletter_token';
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
 export function getToken(): string | null {

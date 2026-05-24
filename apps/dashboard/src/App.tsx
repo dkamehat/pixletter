@@ -68,7 +68,7 @@ export function App() {
   return (
     <div className="container">
       <header className="header">
-        <h1>mailtrack-pf</h1>
+        <h1>pixletter</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
             Dashboard

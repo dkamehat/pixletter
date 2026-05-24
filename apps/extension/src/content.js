@@ -137,7 +137,7 @@ function interceptSend(sendBtn, state) {
           }
         }
       } catch (err) {
-        console.error('[mailtrack-pf] Failed to track:', err);
+        console.error('[pixletter] Failed to track:', err);
       }
 
       // Re-click send (tracking off to avoid loop)
@@ -337,7 +337,7 @@ async function refreshTrackingStatus() {
 
     await chrome.storage.local.set({ trackedEmails: trackedEmails });
   } catch (err) {
-    console.error('[mailtrack-pf] Failed to refresh tracking status:', err);
+    console.error('[pixletter] Failed to refresh tracking status:', err);
   }
 }
 

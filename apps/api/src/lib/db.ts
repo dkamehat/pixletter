@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/d1';
-import * as schema from '@mailtrack/db';
+import * as schema from '@pixletter/db';
 
 /**
  * D1 バインディングから Drizzle インスタンスを生成する。

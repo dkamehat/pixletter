@@ -8,7 +8,7 @@ export function Landing({ onGetStarted }: Props) {
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '60px 16px', textAlign: 'center' }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>📬</div>
-      <h1 style={{ fontSize: 32, fontWeight: 600, marginBottom: 12 }}>mailtrack-pf</h1>
+      <h1 style={{ fontSize: 32, fontWeight: 600, marginBottom: 12 }}>pixletter</h1>
       <p style={{ fontSize: 18, color: 'var(--text-secondary)', marginBottom: 32 }}>
         Open-source email tracking. $0/month. Your data, your server.
       </p>
@@ -18,7 +18,7 @@ export function Landing({ onGetStarted }: Props) {
           Get Started Free
         </button>
         <a
-          href="https://github.com/dkamehat/mailtrack-pf"
+          href="https://github.com/dkamehat/pixletter"
           target="_blank"
           rel="noopener"
           className="btn"

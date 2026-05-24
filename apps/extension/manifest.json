@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "mailtrack-pf",
+  "name": "pixletter",
   "version": "0.1.0",
   "description": "Open-source email tracking for Gmail. Track opens and clicks, $0/month.",
   "permissions": [

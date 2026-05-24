@@ -11,7 +11,7 @@
 
 ## Context
 
-`mailtrack-pf` is a personally operated email tracking platform. Key constraints for technology selection:
+`pixletter` is a personally operated email tracking platform. Key constraints for technology selection:
 
 1. **$0 operating cost** (NFR-COST-01)
 2. **MVP completion in a 1-week sprint** (PRD §9.1)

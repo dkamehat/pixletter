@@ -2,17 +2,17 @@
 
 ## Reporting Vulnerabilities
 
-If you discover a security vulnerability in mailtrack-pf, please report it responsibly:
+If you discover a security vulnerability in pixletter, please report it responsibly:
 
 1. **Do NOT open a public GitHub Issue**
-2. Use [GitHub Security Advisories](https://github.com/dkamehat/mailtrack-pf/security/advisories/new) to report privately
+2. Use [GitHub Security Advisories](https://github.com/dkamehat/pixletter/security/advisories/new) to report privately
 3. Or DM: [@kame__lift on X](https://x.com/kame__lift)
 
 We will acknowledge receipt within 48 hours and provide a fix timeline within 7 days.
 
 ## Production Runtime Security
 
-mailtrack-pf runs on **Cloudflare Workers**, which provides:
+pixletter runs on **Cloudflare Workers**, which provides:
 - Isolated V8 runtime (no Node.js, no filesystem access)
 - Automatic HTTPS enforcement
 - DDoS protection at the edge

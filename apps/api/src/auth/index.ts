@@ -2,13 +2,13 @@
  * Better Auth 設定（Phase 2: マルチテナント認証）。
  *
  * Drizzle アダプター + カスタムスキーマで ba_user テーブルを "user" としてマッピング。
- * databaseHooks で Sign up 時に mailtrack-pf の tenants テーブルにレコードを自動作成する。
+ * databaseHooks で Sign up 時に pixletter の tenants テーブルにレコードを自動作成する。
  */
 
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { drizzle } from 'drizzle-orm/d1';
-import { tenants, users } from '@mailtrack/db';
+import { tenants, users } from '@pixletter/db';
 import { createDb } from '../lib/db';
 import * as authSchema from './schema';
 import type { Env } from '../lib/types';

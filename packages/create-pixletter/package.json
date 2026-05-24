@@ -1,15 +1,15 @@
 {
-  "name": "create-mailtrack",
+  "name": "create-pixletter",
   "version": "0.1.0",
-  "description": "Set up mailtrack-pf on your own Cloudflare account in minutes",
+  "description": "Set up pixletter on your own Cloudflare account in minutes",
   "license": "AGPL-3.0-or-later",
   "bin": {
-    "create-mailtrack": "./dist/index.js"
+    "create-pixletter": "./dist/index.js"
   },
   "type": "module",
   "scripts": {
     "build": "node -e \"require('fs').cpSync('src','dist',{recursive:true})\"",
-    "type-check": "echo 'no ts in create-mailtrack'"
+    "type-check": "echo 'no ts in create-pixletter'"
   },
   "files": [
     "dist"

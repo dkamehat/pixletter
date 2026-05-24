@@ -7,7 +7,7 @@ import {
   clicks,
   optouts,
   tenants,
-} from '@mailtrack/db';
+} from '@pixletter/db';
 import { createId } from '@paralleldrive/cuid2';
 import { createDb } from '../lib/db';
 import { checkAutoBan } from '../lib/abuse';

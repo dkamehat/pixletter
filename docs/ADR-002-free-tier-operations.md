@@ -115,7 +115,7 @@ Adopt the following zero-cost configuration.
 | MailSuite Pro | $4.99 | $59.88 | $179.64 |
 | Mixmax Starter | $24 | $288 | $864 |
 | HubSpot Sales Starter | $20 | $240 | $720 |
-| **mailtrack-pf (self-built)** | **$0** | **$0** | **$0** |
+| **pixletter (self-built)** | **$0** | **$0** | **$0** |
 
 > 3-year savings: **$180** vs MailSuite, **$864** vs Mixmax.
 

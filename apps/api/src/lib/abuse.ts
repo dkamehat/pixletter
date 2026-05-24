@@ -1,5 +1,5 @@
 import { eq, sql } from 'drizzle-orm';
-import { optouts, tenants } from '@mailtrack/db';
+import { optouts, tenants } from '@pixletter/db';
 import type { Database } from './db';
 
 /** opt-out 件数がこの閾値を超えたらテナントを自動凍結（ADR-003 §4） */

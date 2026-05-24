@@ -1,5 +1,5 @@
 -- Better Auth 用テーブル（Phase 2: マルチテナント認証）
--- Better Auth が管理する認証テーブル。mailtrack-pf の tenants/users とは
+-- Better Auth が管理する認証テーブル。pixletter の tenants/users とは
 -- databaseHooks で Sign up 時にリンクする。
 -- テーブル名プレフィックス "ba_" で既存 users テーブルとの衝突を回避。
 

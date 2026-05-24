@@ -80,7 +80,7 @@ export function Onboarding({ onComplete }: Props) {
     <div style={{ maxWidth: 520, margin: '60px auto', padding: '0 16px' }}>
       <div style={{ textAlign: 'center', marginBottom: 32 }}>
         <div style={{ fontSize: 36, marginBottom: 8 }}>🚀</div>
-        <h1 style={{ fontSize: 20, fontWeight: 500, marginBottom: 4 }}>Welcome to mailtrack-pf</h1>
+        <h1 style={{ fontSize: 20, fontWeight: 500, marginBottom: 4 }}>Welcome to pixletter</h1>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
           Let&apos;s get you set up in 3 quick steps
         </p>

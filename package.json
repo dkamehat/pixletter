@@ -1,5 +1,5 @@
 {
-  "name": "mailtrack-pf",
+  "name": "pixletter",
   "version": "0.1.0",
   "private": true,
   "description": "Open-source email tracking, $0/month, hosted on Cloudflare",
@@ -7,7 +7,7 @@
   "author": "kame_lift <https://github.com/dkamehat>",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dkamehat/mailtrack-pf.git"
+    "url": "git+https://github.com/dkamehat/pixletter.git"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
@@ -19,12 +19,12 @@
     "test": "turbo run test",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
-    "db:generate": "pnpm --filter @mailtrack/db generate",
-    "db:migrate:local": "wrangler d1 execute mailtrack-pf-db --local --file=packages/db/migrations/0000_peaceful_apocalypse.sql --config=apps/api/wrangler.toml",
-    "db:migrate:remote": "wrangler d1 execute mailtrack-pf-db --remote --file=packages/db/migrations/0000_peaceful_apocalypse.sql --config=apps/api/wrangler.toml",
-    "db:seed:self": "wrangler d1 execute mailtrack-pf-db --remote --config=apps/api/wrangler.toml --command=\"INSERT OR IGNORE INTO tenants (id, name, plan, monthly_email_limit, reset_at) VALUES ('self', 'Self', 'self', 100000, unixepoch() + 2592000); INSERT OR IGNORE INTO users (id, tenant_id, email, name) VALUES ('self', 'self', 'self@localhost', 'Self User');\"",
-    "deploy:api": "pnpm --filter @mailtrack/api deploy",
-    "deploy:dashboard": "pnpm --filter @mailtrack/dashboard deploy",
+    "db:generate": "pnpm --filter @pixletter/db generate",
+    "db:migrate:local": "wrangler d1 execute pixletter-db --local --file=packages/db/migrations/0000_peaceful_apocalypse.sql --config=apps/api/wrangler.toml",
+    "db:migrate:remote": "wrangler d1 execute pixletter-db --remote --file=packages/db/migrations/0000_peaceful_apocalypse.sql --config=apps/api/wrangler.toml",
+    "db:seed:self": "wrangler d1 execute pixletter-db --remote --config=apps/api/wrangler.toml --command=\"INSERT OR IGNORE INTO tenants (id, name, plan, monthly_email_limit, reset_at) VALUES ('self', 'Self', 'self', 100000, unixepoch() + 2592000); INSERT OR IGNORE INTO users (id, tenant_id, email, name) VALUES ('self', 'self', 'self@localhost', 'Self User');\"",
+    "deploy:api": "pnpm --filter @pixletter/api deploy",
+    "deploy:dashboard": "pnpm --filter @pixletter/dashboard deploy",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

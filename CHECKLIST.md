@@ -22,11 +22,11 @@
 ```bash
 # 1. 新しい作業フォルダを作る（プロジェクトフォルダのある場所で）
 cd ~/Projects
-mkdir mailtrack-pf
-cd mailtrack-pf
+mkdir pixletter
+cd pixletter
 
 # 2. このダウンロード済みファイル一式を配置
-# /mnt/user-data/outputs/mailtrack-pf/ 以下をコピー
+# /mnt/user-data/outputs/pixletter/ 以下をコピー
 
 # 3. Node.js 20+ と pnpm 9+ を確認
 node -v  # v20+ であること
@@ -51,10 +51,10 @@ git init
 git branch -M main
 
 # 2. GitHub で空のリポジトリ作成
-# https://github.com/new → Repository name: mailtrack-pf, Public, Initialize は OFF
+# https://github.com/new → Repository name: pixletter, Public, Initialize は OFF
 
 # 3. リモート追加
-git remote add origin git@github.com:<your-account>/mailtrack-pf.git
+git remote add origin git@github.com:<your-account>/pixletter.git
 
 # 4. 初回コミット
 git add .
@@ -90,13 +90,13 @@ git push -u origin main
 pnpm wrangler login
 
 # 3. D1 データベース作成
-pnpm wrangler d1 create mailtrack-pf-db
+pnpm wrangler d1 create pixletter-db
 
 # 出力例:
-# ✅ Successfully created DB 'mailtrack-pf-db'
+# ✅ Successfully created DB 'pixletter-db'
 # [[d1_databases]]
 # binding = "DB"
-# database_name = "mailtrack-pf-db"
+# database_name = "pixletter-db"
 # database_id = "12345678-1234-..."
 
 # 4. database_id をメモして apps/api/wrangler.toml に追加
@@ -117,7 +117,7 @@ pnpm db:migrate:remote
 pnpm db:seed:self
 
 # 9. 確認: テーブル一覧を取得
-pnpm wrangler d1 execute mailtrack-pf-db --remote \
+pnpm wrangler d1 execute pixletter-db --remote \
   --command="SELECT name FROM sqlite_master WHERE type='table';"
 ```
 
@@ -213,7 +213,7 @@ Day 2 のゴール:
 ### D1 マイグレーションが失敗する
 
 - `packages/db/migrations/0000_init.sql` が生成されているか確認
-- 失敗したら `pnpm wrangler d1 execute mailtrack-pf-db --remote --command="SELECT * FROM sqlite_master;"` でテーブル状態を確認
+- 失敗したら `pnpm wrangler d1 execute pixletter-db --remote --command="SELECT * FROM sqlite_master;"` でテーブル状態を確認
 - 必要なら `DROP TABLE` で全削除してから再適用
 
 ### GitHub Actions の CI が red

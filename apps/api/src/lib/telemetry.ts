@@ -8,7 +8,7 @@
  * 有効化: wrangler.toml の [vars] に TELEMETRY_ENABLED = "true" を追加。
  */
 
-const TELEMETRY_ENDPOINT = 'https://mailtrack-pf-api.kame-lift.workers.dev/api/telemetry';
+const TELEMETRY_ENDPOINT = 'https://pixletter-api.kame-lift.workers.dev/api/telemetry';
 
 export async function sendTelemetryPing(env: {
   HOSTING_MODE?: string;

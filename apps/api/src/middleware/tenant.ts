@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory';
 import { eq, and, gt } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/d1';
-import { apiKeys, SELF_TENANT_ID } from '@mailtrack/db';
+import { apiKeys, SELF_TENANT_ID } from '@pixletter/db';
 import { createDb } from '../lib/db';
 import { createAuth } from '../auth';
 import * as authSchema from '../auth/schema';

@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { eq, and } from 'drizzle-orm';
-import { emails, optouts } from '@mailtrack/db';
+import { emails, optouts } from '@pixletter/db';
 import { createDb } from '../lib/db';
 import { checkAutoBan } from '../lib/abuse';
 import type { Env } from '../lib/types';
@@ -102,7 +102,7 @@ function page(title: string, body: string): string {
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} — mailtrack-pf</title>
+<title>${title} — pixletter</title>
 <style>body{font-family:system-ui,sans-serif;max-width:480px;margin:40px auto;padding:0 16px;color:#333;}
 h1{font-size:1.5rem;}a{color:#2563eb;}</style></head>
 <body><h1>${title}</h1>${body}

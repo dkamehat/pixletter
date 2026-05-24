@@ -53,7 +53,7 @@ async function createTestEmail(
   }>();
 }
 
-describe('mailtrack-pf API', () => {
+describe('pixletter API', () => {
   beforeAll(async () => {
     await applyMigrations(env.DB);
   });

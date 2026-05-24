@@ -1,12 +1,12 @@
-# 📬 mailtrack-pf
+# 📬 pixletter
 
 > **Open-source email tracking, $0/month, hosted on Cloudflare**
 
 Chrome extension + dashboard for tracking opens and link clicks on emails sent from Gmail. Keep your tracking data sovereign while running at $0/month.
 
-[![CI](https://github.com/dkamehat/mailtrack-pf/actions/workflows/ci.yml/badge.svg)](https://github.com/dkamehat/mailtrack-pf/actions) [![Cost](https://img.shields.io/badge/Monthly%20Cost-%240-brightgreen)]() [![License](https://img.shields.io/badge/License-AGPL--3.0-blue)]() [![Tests](https://img.shields.io/badge/Tests-29%20passing-brightgreen)]()
+[![CI](https://github.com/dkamehat/pixletter/actions/workflows/ci.yml/badge.svg)](https://github.com/dkamehat/pixletter/actions) [![Cost](https://img.shields.io/badge/Monthly%20Cost-%240-brightgreen)]() [![License](https://img.shields.io/badge/License-AGPL--3.0-blue)]() [![Tests](https://img.shields.io/badge/Tests-29%20passing-brightgreen)]()
 
-[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/dkamehat/mailtrack-pf)
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/dkamehat/pixletter)
 
 ![Dashboard](docs/screenshots/09-dashboard.png)
 
@@ -145,13 +145,13 @@ Built in one week as a solo PM. 29 tests, TypeScript strict mode, CI green. The 
 
 ```bash
 # Clone
-git clone https://github.com/dkamehat/mailtrack-pf.git
-cd mailtrack-pf
+git clone https://github.com/dkamehat/pixletter.git
+cd pixletter
 pnpm install
 
 # Cloudflare D1 Setup
 pnpm wrangler login
-pnpm wrangler d1 create mailtrack-pf-db
+pnpm wrangler d1 create pixletter-db
 # → Update database_id in wrangler.toml
 
 # Migrations
@@ -290,7 +290,7 @@ Known dev-dependency vulnerabilities (wrangler 3.x, undici, esbuild) do not affe
 
 THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. THE AUTHORS ARE NOT LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.
 
-By deploying or using mailtrack-pf, you acknowledge:
+By deploying or using pixletter, you acknowledge:
 
 1. **You are solely responsible** for compliance with all applicable laws (GDPR, CAN-SPAM, APPI, etc.) in every jurisdiction where your recipients are located.
 2. **You must inform recipients** where legally required. The tool provides opt-out mechanisms, but the legal obligation to disclose tracking rests with you, not the software authors.
@@ -427,7 +427,7 @@ All tracking data is permanently removed. The tenant record is preserved in susp
 - [x] Usage dashboard (UsageBanner)
 - [x] Deploy to Cloudflare button
 - [x] Onboarding flow
-- [ ] `npx create-mailtrack@latest` setup wizard
+- [ ] `npx create-pixletter@latest` setup wizard
 - [ ] Documentation site
 
 ---

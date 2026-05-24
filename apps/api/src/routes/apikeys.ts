@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { eq, and } from 'drizzle-orm';
-import { apiKeys } from '@mailtrack/db';
+import { apiKeys } from '@pixletter/db';
 import { createId } from '@paralleldrive/cuid2';
 import { createDb } from '../lib/db';
 import { hashApiKey } from '../middleware/tenant';

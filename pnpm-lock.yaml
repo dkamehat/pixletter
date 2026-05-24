@@ -23,12 +23,12 @@ importers:
 
   apps/api:
     dependencies:
-      '@mailtrack/db':
-        specifier: workspace:*
-        version: link:../../packages/db
       '@paralleldrive/cuid2':
         specifier: ^2.2.2
         version: 2.3.1
+      '@pixletter/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       better-auth:
         specifier: ^1.6.11
         version: 1.6.11(@cloudflare/workers-types@4.20260514.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260514.1)(kysely@0.28.17))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(vitest@2.1.9(@types/node@20.19.41))
@@ -83,7 +83,7 @@ importers:
         specifier: ^6.0.0
         version: 6.4.2(@types/node@20.19.41)(tsx@4.22.0)
 
-  packages/create-mailtrack: {}
+  packages/create-pixletter: {}
 
   packages/db:
     dependencies:

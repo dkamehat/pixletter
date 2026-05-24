@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { eq } from 'drizzle-orm';
-import { emails, opens, links, clicks, optouts } from '@mailtrack/db';
+import { emails, opens, links, clicks, optouts } from '@pixletter/db';
 import { createDb } from '../lib/db';
 import { hashIp } from '../lib/hash';
 import { notifySlack } from '../lib/notify';

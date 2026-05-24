@@ -1,6 +1,6 @@
 # SETUP.md — Day 1 Initial Setup Guide
 
-Step-by-step checklist to set up the `mailtrack-pf` development environment from scratch.
+Step-by-step checklist to set up the `pixletter` development environment from scratch.
 **Estimated time: 60–90 minutes**
 
 ---
@@ -19,12 +19,12 @@ Step-by-step checklist to set up the `mailtrack-pf` development environment from
 ## Step 1: GitHub Repository (5 min)
 
 ```bash
-# Create a new repo on GitHub (mailtrack-pf, Public)
+# Create a new repo on GitHub (pixletter, Public)
 
 # Initialize locally
-mkdir mailtrack-pf && cd mailtrack-pf
+mkdir pixletter && cd pixletter
 git init
-git remote add origin git@github.com:<your-username>/mailtrack-pf.git
+git remote add origin git@github.com:<your-username>/pixletter.git
 ```
 
 ---
@@ -35,7 +35,7 @@ git remote add origin git@github.com:<your-username>/mailtrack-pf.git
 # package.json
 cat > package.json <<'EOF'
 {
-  "name": "mailtrack-pf",
+  "name": "pixletter",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@9.0.0",
@@ -49,7 +49,7 @@ cat > package.json <<'EOF'
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "db:generate": "drizzle-kit generate",
-    "db:push": "wrangler d1 execute mailtrack-pf-db --file=packages/db/migrations/latest.sql"
+    "db:push": "wrangler d1 execute pixletter-db --file=packages/db/migrations/latest.sql"
   },
   "devDependencies": {
     "turbo": "^2.0.0",
@@ -149,7 +149,7 @@ cd packages/db
 # package.json
 cat > package.json <<'EOF'
 {
-  "name": "@mailtrack/db",
+  "name": "@pixletter/db",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -216,7 +216,7 @@ pnpm add -D -w wrangler
 pnpm wrangler login
 
 # Create D1 database
-pnpm wrangler d1 create mailtrack-pf-db
+pnpm wrangler d1 create pixletter-db
 # Note the database_id from output → add to wrangler.toml
 
 # Generate migrations
@@ -225,13 +225,13 @@ pnpm drizzle-kit generate
 
 # Apply migrations (local)
 cd ../..
-pnpm wrangler d1 execute mailtrack-pf-db --local --file=packages/db/migrations/0000_init.sql
+pnpm wrangler d1 execute pixletter-db --local --file=packages/db/migrations/0000_init.sql
 
 # Apply migrations (remote / production)
-pnpm wrangler d1 execute mailtrack-pf-db --remote --file=packages/db/migrations/0000_init.sql
+pnpm wrangler d1 execute pixletter-db --remote --file=packages/db/migrations/0000_init.sql
 
 # Verify
-pnpm wrangler d1 execute mailtrack-pf-db --remote --command="SELECT name FROM sqlite_master WHERE type='table';"
+pnpm wrangler d1 execute pixletter-db --remote --command="SELECT name FROM sqlite_master WHERE type='table';"
 ```
 
 ---
@@ -248,7 +248,7 @@ CLOUDFLARE_D1_TOKEN=
 
 # Auth
 BETTER_AUTH_SECRET=
-BETTER_AUTH_URL=https://mailtrack-pf-dashboard.pages.dev
+BETTER_AUTH_URL=https://pixletter-dashboard.pages.dev
 
 # Notifications (optional)
 SLACK_WEBHOOK_URL=

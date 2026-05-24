@@ -4,7 +4,7 @@
 # 必要な Secrets:
 #   CLOUDFLARE_API_TOKEN  — Cloudflare API Token (Workers + D1 権限)
 #   CLOUDFLARE_ACCOUNT_ID — Cloudflare Account ID
-#   D1_DATABASE_NAME      — D1 database name (default: mailtrack-pf-db)
+#   D1_DATABASE_NAME      — D1 database name (default: pixletter-db)
 
 name: Deploy to Cloudflare
 
@@ -13,7 +13,7 @@ on:
     inputs:
       d1_database_name:
         description: 'D1 database name'
-        default: 'mailtrack-pf-db'
+        default: 'pixletter-db'
         required: true
 
 concurrency:
@@ -72,10 +72,10 @@ jobs:
         run: npx wrangler deploy --config=apps/api/wrangler.toml
 
       - name: Build Dashboard
-        run: pnpm --filter @mailtrack/dashboard build
+        run: pnpm --filter @pixletter/dashboard build
 
       - name: Deploy Dashboard to Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy apps/dashboard/dist --project-name=mailtrack-pf-dashboard
+        run: npx wrangler pages deploy apps/dashboard/dist --project-name=pixletter-dashboard

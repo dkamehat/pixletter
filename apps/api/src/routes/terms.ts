@@ -14,7 +14,7 @@ app.get('/', (c) => {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>利用規約 / Terms of Service — mailtrack-pf</title>
+<title>利用規約 / Terms of Service — pixletter</title>
 <style>
 body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;color:#333;line-height:1.6;}
 h1{font-size:1.5rem;} h2{font-size:1.2rem;margin-top:2rem;}
@@ -26,7 +26,7 @@ a{color:#2563eb;}
 <p><strong>最終更新:</strong> 2026年5月</p>
 
 <h2>1. サービス概要</h2>
-<p>mailtrack-pf（以下「本サービス」）は、Gmail 送信メールの開封・クリック追跡機能を提供するオープンソースサービスです。</p>
+<p>pixletter（以下「本サービス」）は、Gmail 送信メールの開封・クリック追跡機能を提供するオープンソースサービスです。</p>
 
 <h2>2. 利用条件</h2>
 <ul>
@@ -70,7 +70,7 @@ a{color:#2563eb;}
 
 <h2>8. 連絡先</h2>
 <p>Operator: kame_lift (@kame__lift)<br>
-Email: <strong>support@mailtrack-pf.dev</strong></p>
+Email: <strong>support@pixletter.dev</strong></p>
 
 <p style="margin-top:32px;font-size:12px;color:#999;">
 <a href="/privacy">Privacy Policy</a> · <a href="/">Home</a></p>

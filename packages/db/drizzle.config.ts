@@ -4,13 +4,13 @@ import { defineConfig } from 'drizzle-kit';
  * Drizzle Kit configuration for Cloudflare D1.
  *
  * Generate migrations:
- *   pnpm --filter @mailtrack/db generate
+ *   pnpm --filter @pixletter/db generate
  *
  * Apply migrations to local D1:
- *   pnpm wrangler d1 execute mailtrack-pf-db --local --file=packages/db/migrations/0000_init.sql
+ *   pnpm wrangler d1 execute pixletter-db --local --file=packages/db/migrations/0000_init.sql
  *
  * Apply migrations to remote D1:
- *   pnpm wrangler d1 execute mailtrack-pf-db --remote --file=packages/db/migrations/0000_init.sql
+ *   pnpm wrangler d1 execute pixletter-db --remote --file=packages/db/migrations/0000_init.sql
  */
 export default defineConfig({
   schema: './schema.ts',

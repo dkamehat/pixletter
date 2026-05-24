@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { eq } from 'drizzle-orm';
 import Stripe from 'stripe';
-import { tenants } from '@mailtrack/db';
+import { tenants } from '@pixletter/db';
 import { createDb } from '../lib/db';
 import type { Env } from '../lib/types';
 

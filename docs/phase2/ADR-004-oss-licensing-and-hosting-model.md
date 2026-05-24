@@ -29,7 +29,7 @@ License selection for Phase 2 OSS release is a strategic decision that directly 
 ### Model: **Open Core + Permissive Trust**
 
 ```
-mailtrack-pf (core)
+pixletter (core)
 ├── AGPLv3 licensed (all core features)
 ├── OSS: anyone can fork and self-host
 └── Official hosted: operated by maintainer, references AGPLv3 source
@@ -49,7 +49,7 @@ If enterprise features are added in the future, they may be implemented in a **s
 
 AGPLv3 **§13 (Remote Network Interaction)** requires that anyone who modifies the source and provides it as a **network service** must publish their modified source code.
 
-> If a major cloud provider forks mailtrack-pf to create a paid SaaS, they must publish their modifications. This effectively **deters hosting resale**.
+> If a major cloud provider forks pixletter to create a paid SaaS, they must publish their modifications. This effectively **deters hosting resale**.
 
 #### 2. Proven track record
 
@@ -74,7 +74,7 @@ This aligns with the PRD-Phase2 trust-building strategy.
 | Concern | Mitigation |
 |---|---|
 | "Enterprises avoid copyleft" | Using the official SaaS doesn't impose copyleft obligations on users |
-| "Can't use as an embedded library" | mailtrack-pf is not designed for embedding — not applicable |
+| "Can't use as an embedded library" | pixletter is not designed for embedding — not applicable |
 | "Hard to switch to BSL later" | Prepare CLA (Contributor License Agreement) for Phase 3 |
 
 ---
@@ -229,9 +229,9 @@ Reference: Cal.com, Plausible use the same approach.
 
 | Item | Policy |
 |---|---|
-| Product name | `mailtrack-pf` (working title) — revisit at Phase 2 start |
+| Product name | `pixletter` (working title) — revisit at Phase 2 start |
 | Logo | In-house (Phase 2 Week 4) |
-| Domain | Acquire `mailtrack-pf.dev` ($9/year) |
+| Domain | Acquire `pixletter.dev` ($9/year) |
 | Trademark registration | Consider after MAU growth in Phase 3 |
 | Forked brands | AGPLv3 requires name change (forkers must use a different name) |
 

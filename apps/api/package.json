@@ -1,5 +1,5 @@
 {
-  "name": "@mailtrack/api",
+  "name": "@pixletter/api",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@mailtrack/db": "workspace:*",
+    "@pixletter/db": "workspace:*",
     "@paralleldrive/cuid2": "^2.2.2",
     "better-auth": "^1.6.11",
     "drizzle-orm": "^0.45.0",

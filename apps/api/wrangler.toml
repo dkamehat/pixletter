@@ -1,22 +1,22 @@
-name = "mailtrack-pf-api"
+name = "pixletter-api"
 main = "src/index.ts"
 compatibility_date = "2026-05-14"
 compatibility_flags = ["nodejs_compat"]
 
 [[d1_databases]]
 binding = "DB"
-database_name = "mailtrack-pf-db"
+database_name = "pixletter-db"
 database_id = "aaa3d316-ff69-42d2-aee0-fbcc42a3c32c"
 
 # 環境変数（公開しても安全なもの）
 [vars]
 HOSTING_MODE = "hosted"  # Phase 2: マルチテナント認証有効
-ALLOWED_ORIGINS = "https://mailtrack-pf-dashboard.pages.dev,http://localhost:5173"
+ALLOWED_ORIGINS = "https://pixletter-dashboard.pages.dev,http://localhost:5173"
 
 # Secrets（wrangler secret put で設定）:
 #   - SENTRY_DSN
 #   - SLACK_WEBHOOK_URL (optional)
-#   - PIXEL_DOMAIN (例: "mailtrack-pf-api.kame-lift.workers.dev")
+#   - PIXEL_DOMAIN (例: "pixletter-api.kame-lift.workers.dev")
 
 # レート制限（Phase 2 で有効化）
 # [[unsafe.bindings]]
@@ -32,5 +32,5 @@ head_sampling_rate = 1.0
 
 # ルーティング設定（Day 7 でカスタムドメイン取得時に有効化）
 # [[routes]]
-# pattern = "api.mailtrack-pf.dev/*"
-# zone_name = "mailtrack-pf.dev"
+# pattern = "api.pixletter.dev/*"
+# zone_name = "pixletter.dev"

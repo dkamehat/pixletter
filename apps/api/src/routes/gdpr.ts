@@ -9,7 +9,7 @@ import {
   apiKeys,
   users,
   tenants,
-} from '@mailtrack/db';
+} from '@pixletter/db';
 import { createDb } from '../lib/db';
 import type { Env } from '../lib/types';
 
@@ -53,7 +53,7 @@ app.delete('/data', async (c) => {
   // 6. apiKeys
   await db.delete(apiKeys).where(eq(apiKeys.tenantId, tenantId));
 
-  // 7. users (mailtrack-pf users table)
+  // 7. users (pixletter users table)
   await db.delete(users).where(eq(users.tenantId, tenantId));
 
   // 8. tenant → soft delete (preserve record for audit)

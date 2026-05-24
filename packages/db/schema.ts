@@ -1,5 +1,5 @@
 /**
- * mailtrack-pf Database Schema
+ * pixletter Database Schema
  *
  * Database: Cloudflare D1 (SQLite)
  * ORM: Drizzle ORM
@@ -12,7 +12,7 @@
  * ADR-003 参照。
  *
  * Migrations: `pnpm drizzle-kit generate` で packages/db/migrations/ に生成。
- * Cloudflare D1 適用: `wrangler d1 execute mailtrack-pf-db --file=...`
+ * Cloudflare D1 適用: `wrangler d1 execute pixletter-db --file=...`
  */
 
 import { sql } from 'drizzle-orm';

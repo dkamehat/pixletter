@@ -1,5 +1,5 @@
 import { eq, and, gte } from 'drizzle-orm';
-import { opens, emails } from '@mailtrack/db';
+import { opens, emails } from '@pixletter/db';
 import type { Database } from './db';
 
 /**

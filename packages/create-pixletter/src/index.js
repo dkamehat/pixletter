@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * create-mailtrack — FR-P2-20
- * npx create-mailtrack@latest でセルフホスト版を簡単セットアップ。
+ * create-pixletter — FR-P2-20
+ * npx create-pixletter@latest でセルフホスト版を簡単セットアップ。
  *
  * 手順:
  * 1. git clone
@@ -18,14 +18,14 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 
-const REPO = 'https://github.com/dkamehat/mailtrack-pf.git';
-const DIR = 'mailtrack-pf';
+const REPO = 'https://github.com/dkamehat/pixletter.git';
+const DIR = 'pixletter';
 
 const rl = createInterface({ input: process.stdin, output: process.stdout });
 const ask = (q) => new Promise((resolve) => rl.question(q, resolve));
 
 async function main() {
-  console.log('\n📬 mailtrack-pf Setup Wizard\n');
+  console.log('\n📬 pixletter Setup Wizard\n');
   console.log('This will set up your own email tracking instance on Cloudflare.\n');
 
   // Step 1: Clone
@@ -48,7 +48,7 @@ async function main() {
   run('npx wrangler login');
 
   // Step 4: Create D1
-  const dbName = (await ask('\nD1 database name [mailtrack-pf-db]: ')).trim() || 'mailtrack-pf-db';
+  const dbName = (await ask('\nD1 database name [pixletter-db]: ')).trim() || 'pixletter-db';
   console.log(`\nCreating D1 database "${dbName}"...`);
   try {
     const output = run(`npx wrangler d1 create ${dbName}`, true);

@@ -9,7 +9,7 @@
 
 - APIs & Services → OAuth consent screen
 - User Type: **External**
-- App name: `mailtrack-pf`
+- App name: `pixletter`
 - User support email: your email address
 - Authorized domains: your Workers domain (e.g., `kame-lift.workers.dev`)
 - Scopes: `email`, `profile`, `openid`
@@ -19,7 +19,7 @@
 
 - APIs & Services → Credentials → Create Credentials → OAuth Client ID
 - Application type: **Web application**
-- Name: `mailtrack-pf`
+- Name: `pixletter`
 - Authorized JavaScript origins: `https://<your-api>.workers.dev`
 - Authorized redirect URIs: `https://<your-api>.workers.dev/api/auth/callback/google`
 
