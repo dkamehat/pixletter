@@ -16,7 +16,7 @@
     "better-auth": "^1.6.11",
     "drizzle-orm": "^0.45.0",
     "hono": "^4.6.0",
-    "stripe": "^22.1.1"
+    "stripe": "^22.2.0"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.16.13",
