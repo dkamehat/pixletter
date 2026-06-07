@@ -24,7 +24,7 @@ Step-by-step checklist to set up the `pixletter` development environment from sc
 # Initialize locally
 mkdir pixletter && cd pixletter
 git init
-git remote add origin git@github.com:<your-username>/pixletter.git
+git remote add origin support@example.com:<your-username>/pixletter.git
 ```
 
 ---

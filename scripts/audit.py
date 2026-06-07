@@ -26,24 +26,33 @@ DEFAULT_SKIP_DIRS = {".git", "node_modules", "dist", "build", ".next", ".vercel"
 
 
 def load_patterns(repo_root: Path) -> list[tuple[str, re.Pattern]]:
-    """Load patterns from .audit-patterns.txt. Returns list of (raw_pattern, compiled_regex)."""
+    """Load labeled regex patterns from .audit-patterns.txt."""
     patterns_path = repo_root / PATTERNS_FILE
     if not patterns_path.exists():
         print(f"ERROR: {PATTERNS_FILE} not found at {patterns_path}", file=sys.stderr)
-        print(f"  Hint: cp .audit-patterns.example .audit-patterns.txt and fill in real values.", file=sys.stderr)
+        print(f"  Hint: cp .audit-patterns.example .audit-patterns.txt and add labeled regexes.", file=sys.stderr)
         sys.exit(2)
 
     patterns = []
     with patterns_path.open(encoding="utf-8") as f:
-        for line in f:
+        for line_no, line in enumerate(f, start=1):
             line = line.rstrip("\n").rstrip("\r")
             if not line or line.lstrip().startswith("#"):
                 continue
+            if "\t" in line:
+                label, pattern = line.split("\t", 1)
+            else:
+                label, pattern = "unlabeled_pattern", line
+            label = label.strip()
+            pattern = pattern.strip()
+            if not label or not pattern:
+                print(f"WARNING: empty label or pattern at {PATTERNS_FILE}:{line_no}", file=sys.stderr)
+                continue
             try:
-                compiled = re.compile(re.escape(line), re.IGNORECASE)
-                patterns.append((line, compiled))
+                compiled = re.compile(pattern, re.IGNORECASE)
+                patterns.append((label, compiled))
             except re.error as e:
-                print(f"WARNING: invalid pattern '{line}': {e}", file=sys.stderr)
+                print(f"WARNING: invalid pattern at {PATTERNS_FILE}:{line_no}: {e}", file=sys.stderr)
 
     if not patterns:
         print(f"ERROR: {PATTERNS_FILE} has zero valid patterns. Check the file.", file=sys.stderr)
@@ -84,8 +93,8 @@ def should_skip(path: Path, repo_root: Path) -> bool:
     return False
 
 
-def scan_file(path: Path, patterns: list[tuple[str, re.Pattern]]) -> list[tuple[int, str, str]]:
-    """Return list of (line_number, raw_pattern, matched_text)."""
+def scan_file(path: Path, patterns: list[tuple[str, re.Pattern]]) -> list[tuple[int, str]]:
+    """Return list of (line_number, label), never matched text."""
     matches = []
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
@@ -94,10 +103,10 @@ def scan_file(path: Path, patterns: list[tuple[str, re.Pattern]]) -> list[tuple[
         return matches
 
     for lineno, line in enumerate(text.splitlines(), start=1):
-        for raw, regex in patterns:
+        for label, regex in patterns:
             m = regex.search(line)
             if m:
-                matches.append((lineno, raw, m.group(0)))
+                matches.append((lineno, label))
     return matches
 
 
@@ -138,12 +147,12 @@ def main() -> int:
         if not target.is_file():
             continue
         matches = scan_file(target, patterns)
-        for lineno, raw, matched in matches:
+        for lineno, label in matches:
             try:
                 rel = target.relative_to(repo_root)
             except ValueError:
                 rel = target
-            print(f"LEAK: {rel}:{lineno}: pattern matched (category placeholder shown to avoid re-leak)", file=sys.stderr)
+            print(f"LEAK: {rel}:{lineno}: {label} matched", file=sys.stderr)
             total_matches += 1
 
     if total_matches > 0:

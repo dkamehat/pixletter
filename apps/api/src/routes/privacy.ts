@@ -50,7 +50,7 @@ a{color:#2563eb;}
 </ul>
 
 <h2>5. Data Deletion (GDPR)</h2>
-<p>To request deletion of all data associated with your email address, contact the sender directly or email <strong>privacy@pixletter.dev</strong>.</p>
+<p>To request deletion of all data associated with your email address, contact the sender directly or email <strong>support@example.com</strong>.</p>
 
 <h2>6. Self-Hosted Instances</h2>
 <p>If you are using a self-hosted instance of pixletter, the operator of that instance is the data controller. This policy applies only to the official hosted service.</p>
@@ -59,7 +59,7 @@ a{color:#2563eb;}
 <p>We may update this policy from time to time. Changes will be posted on this page with an updated date.</p>
 
 <h2>8. Contact</h2>
-<p>For questions about this policy: <strong>privacy@pixletter.dev</strong></p>
+<p>For questions about this policy: <strong>support@example.com</strong></p>
 
 <p style="margin-top:32px;font-size:12px;color:#999;"><a href="/">← Back to pixletter</a></p>
 </body>

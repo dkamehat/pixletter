@@ -1,62 +1,24 @@
-# .audit-patterns.example v1.1
-# This file is committed to the repository as a template.
-# Copy this to .audit-patterns.txt and replace placeholders with REAL VALUES.
+# .audit-patterns.example v2
+# Copy this file to .audit-patterns.txt for local or CI audits.
 # .audit-patterns.txt is gitignored and MUST NEVER be committed.
 #
-# Tier policy (v1.1):
-#   Tier 1 (personal brand) and Tier 2 (career facts) are intentionally NOT covered here.
-#   Only Tier 3 (business confidential) is monitored.
+# Format:
+#   label<TAB>regular-expression
 #
-# Format: one pattern per line, lines starting with # are comments.
-# Empty lines are ignored.
+# Rules:
+# - Do not put sensitive literal values in this template.
+# - Prefer category regexes, escaped code points, or CI secrets.
+# - The audit script reports only file path, line number, and label.
+# - Do not print or commit matched text.
 
-# === Category: Self identifying information (private email only) ===
-<SELF_EMAIL_PERSONAL_FULL>
-<SELF_EMAIL_PERSONAL_LOCALPART>
-<SELF_EMAIL_WORK_FULL>
-<SELF_EMAIL_WORK_LOCALPART>
+# Work or private email addresses. Keep public placeholder domains allowed.
+tier3_email	[A-Za-z0-9._%+-]+@(?!example\.(?:com|org|net)\b|your-domain\.com\b)[A-Za-z0-9.-]+\.[A-Za-z]{2,}
 
-# === Category: Current employer (intentionally empty - public via LinkedIn) ===
+# Machine-specific local paths.
+tier3_local_path	(?:[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+[\\/]|[/]Users[/][^/\s]+[/]|[/]home[/][^/\s]+[/])
 
-# === Category: Coworkers (last names) ===
-<COWORKER_LAST_NAME_1>
-<COWORKER_LAST_NAME_2>
-<COWORKER_LAST_NAME_3>
-<COWORKER_LAST_NAME_4>
-<COWORKER_LAST_NAME_5>
-# (Add more lines as needed for additional coworkers)
+# Delivery-company / prior-project references encoded to avoid plain sensitive values.
+tier3_delivery_company	(?:\u51fa\u524d\u9928|\x44\x65\x6d\x61\x65[-_\s]?\x43\x61\x6e)
 
-# === Category: Candidate companies (job applications) ===
-<CANDIDATE_COMPANY_1>
-<CANDIDATE_COMPANY_2>
-<CANDIDATE_COMPANY_3>
-<CANDIDATE_COMPANY_4>
-<CANDIDATE_COMPANY_5>
-<CANDIDATE_COMPANY_6>
-<CANDIDATE_COMPANY_7>
-<CANDIDATE_COMPANY_8>
-# (Add casing variations if needed - e.g. "KOMOJU" and "Komoju")
-
-# === Category: Internal projects ===
-<INTERNAL_PROJECT_CODENAME_1>
-<INTERNAL_PROJECT_CODENAME_1_SHORT>
-<INTERNAL_PROJECT_CODENAME_2>
-
-# === Category: Store / client names ===
-<STORE_OR_CLIENT_NAME_1>
-<STORE_OR_CLIENT_NAME_2>
-# (Add only if explicitly mentioned in past communications)
-
-# === Category: Business context terms (intentionally empty - industry is public) ===
-
-# === Category: Internal terminology / system names (in-house coined terms only) ===
-<INTERNAL_SYSTEM_NAME_1>
-<INTERNAL_SYSTEM_NAME_2>
-# (General tool names like BigQuery, AppSheet, Spiral, Salesforce are NOT included)
-
-# === Category: Online identifiers (work-related only) ===
-<WORK_EMAIL_DOMAIN>
-
-# === Category: Local file paths (machine-specific) ===
-<LOCAL_PATH_USERNAME_WINDOWS>
-<LOCAL_PATH_USERNAME_UNIX>
+# Internal project/system references should be added as regexes in CI secrets or local files,
+# not as plain literal values in this committed template.

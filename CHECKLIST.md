@@ -54,7 +54,7 @@ git branch -M main
 # https://github.com/new → Repository name: pixletter, Public, Initialize は OFF
 
 # 3. リモート追加
-git remote add origin git@github.com:<your-account>/pixletter.git
+git remote add origin support@example.com:<your-account>/pixletter.git
 
 # 4. 初回コミット
 git add .

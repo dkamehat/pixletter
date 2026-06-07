@@ -16,7 +16,7 @@
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240909.0",
+    "@cloudflare/workers-types": "^4.20260607.1",
     "better-sqlite3": "^11.0.0",
     "drizzle-kit": "^0.31.10",
     "typescript": "^5.5.0"
