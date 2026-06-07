@@ -28,7 +28,7 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^25.9.2",
     "turbo": "^2.0.0",
     "typescript": "^5.5.0",
     "wrangler": "^4.98.0"
