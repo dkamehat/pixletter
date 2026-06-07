@@ -15,7 +15,7 @@
     "@pixletter/db": "workspace:*",
     "better-auth": "^1.6.11",
     "drizzle-orm": "^0.45.0",
-    "hono": "^4.6.0",
+    "hono": "^4.12.21",
     "stripe": "^22.1.1"
   },
   "devDependencies": {
