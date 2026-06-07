@@ -152,7 +152,7 @@ function interceptSend(sendBtn, state) {
  * Compose ウィンドウからメールメタデータを抽出する。
  */
 function extractEmailData(composeEl) {
-  if (!composeEl) return { subject: '', recipient: 'unknown@unknown.com' };
+  if (!composeEl) return { subject: '', recipient: 'support@example.com' };
 
   var subjectEl = composeEl.querySelector('input[name="subjectbox"]');
   var subject = subjectEl ? subjectEl.value : '';
@@ -167,7 +167,7 @@ function extractEmailData(composeEl) {
       recipients.push(email.trim());
     }
   }
-  var recipient = recipients[0] || 'unknown@unknown.com';
+  var recipient = recipients[0] || 'support@example.com';
 
   // Body URLs
   var bodyEl = composeEl.querySelector('[role="textbox"][contenteditable="true"]');

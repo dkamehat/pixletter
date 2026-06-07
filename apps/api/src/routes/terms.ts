@@ -70,7 +70,7 @@ a{color:#2563eb;}
 
 <h2>8. 連絡先</h2>
 <p>Operator: kame_lift (@kame__lift)<br>
-Email: <strong>support@pixletter.dev</strong></p>
+Email: <strong>support@example.com</strong></p>
 
 <p style="margin-top:32px;font-size:12px;color:#999;">
 <a href="/privacy">Privacy Policy</a> · <a href="/">Home</a></p>

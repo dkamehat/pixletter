@@ -11,18 +11,18 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@pixletter/db": "workspace:*",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@pixletter/db": "workspace:*",
     "better-auth": "^1.6.11",
     "drizzle-orm": "^0.45.0",
     "hono": "^4.6.0",
     "stripe": "^22.1.1"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.8.0",
-    "@cloudflare/workers-types": "^4.20240909.0",
+    "@cloudflare/vitest-pool-workers": "^0.16.13",
+    "@cloudflare/workers-types": "^4.20260607.1",
     "typescript": "^5.5.0",
-    "vitest": "~2.1.0",
-    "wrangler": "^3.80.0"
+    "vitest": "~4.1.8",
+    "wrangler": "^4.98.0"
   }
 }
